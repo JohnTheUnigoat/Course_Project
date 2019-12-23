@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public class NandGate : Element
+    public class NorGate : Element
     {
         public override Input[] Inputs { get; }
 
@@ -14,13 +14,13 @@ namespace CourseProject
         {
             get
             {
-                bool res = !Inputs.All(x => x.Value);
+                bool res = Inputs.All(x => x.Value == false);
 
                 return new bool[] { res };
             }
         }
 
-        public NandGate(int numberOfInputs = 2)
+        public NorGate(int numberOfInputs = 2)
         {
             Inputs = new Input[numberOfInputs];
         }

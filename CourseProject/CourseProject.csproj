@@ -57,6 +57,7 @@
     <Compile Include="Classes\Element.cs" />
     <Compile Include="Classes\Gates\AndGate.cs" />
     <Compile Include="Classes\Gates\NandGate.cs" />
+    <Compile Include="Classes\Gates\NorGate.cs" />
     <Compile Include="Classes\Gates\NotGate.cs" />
     <Compile Include="Classes\Gates\OrGate.cs" />
     <Compile Include="Classes\Gates\XorGate.cs" />
