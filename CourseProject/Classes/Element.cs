@@ -28,7 +28,7 @@ namespace CourseProject
             }
         }
 
-        public Input(Element source, int outputIndex)
+        public Input(Element source, int outputIndex = 0)
         {
             Source = source;
             OutputIndex = outputIndex;

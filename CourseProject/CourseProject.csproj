@@ -52,7 +52,10 @@
     <Compile Include="CircuitDesignerForm.Designer.cs">
       <DependentUpon>CircuitDesignerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\CircuitInput.cs" />
+    <Compile Include="Classes\Connection.cs" />
     <Compile Include="Classes\Element.cs" />
+    <Compile Include="Classes\Gates\AndGate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CircuitDesignerForm.resx">
