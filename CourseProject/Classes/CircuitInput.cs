@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    class CircuitInput : Element
+    public class CircuitInput : Element
     {
         public bool Value { get; set; }
 

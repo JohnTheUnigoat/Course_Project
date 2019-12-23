@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    class OrGate : Element
+    public class OrGate : Element
     {
         public override Input[] Inputs { get; }
 

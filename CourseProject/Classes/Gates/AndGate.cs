@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    class AndGate : Element
+    public class AndGate : Element
     {
         public override Input[] Inputs { get; }
 

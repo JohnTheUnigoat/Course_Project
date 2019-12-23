@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    class XorGate : Element
+    public class XorGate : Element
     {
         public override Input[] Inputs { get; }
 

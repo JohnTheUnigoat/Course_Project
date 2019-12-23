@@ -6,23 +6,18 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public class Connection : Element
+    public class NotGate : Element
     {
         public override Input[] Inputs { get; }
 
         public override bool[] Outputs
         {
-            get { return new bool[] { Inputs[0].Value }; }
+            get { return new bool[] { !Inputs[0].Value }; }
         }
 
-        public Connection()
+        public NotGate()
         {
             Inputs = new Input[1];
-        }
-
-        public Connection(Input input)
-        {
-            Inputs = new Input[] { input };
         }
 
         public void SetInput(Input input)
