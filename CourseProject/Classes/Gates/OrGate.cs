@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    class AndGate : Element
+    class OrGate : Element
     {
         public override Input[] Inputs { get; }
 
@@ -14,13 +14,13 @@ namespace CourseProject
         {
             get
             {
-                bool res = Inputs.All(x => x.Value);
+                bool res = Inputs.Any(x => x.Value);
 
                 return new bool[] { res };
             }
         }
 
-        public AndGate(int numberOfInputs = 2)
+        public OrGate(int numberOfInputs = 2)
         {
             Inputs = new Input[numberOfInputs];
         }
