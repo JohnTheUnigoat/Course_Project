@@ -19,7 +19,13 @@ namespace CourseProject
 
         public bool Value
         {
-            get { return Source.Outputs[OutputIndex]; }
+            get
+            {
+                if (!IsSet)
+                    return false;
+
+                return Source.Outputs[OutputIndex];
+            }
         }
 
         public Input(Element source, int outputIndex)
