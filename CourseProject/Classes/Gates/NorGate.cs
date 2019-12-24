@@ -6,28 +6,13 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public class NorGate : Element
+    public class NorGate : Gate
     {
-        public override Input[] Inputs { get; }
-
-        public override bool[] Outputs
+        public override bool Output
         {
-            get
-            {
-                bool res = Inputs.All(x => x.Value == false);
-
-                return new bool[] { res };
-            }
+            get { return Inputs.All(x => x.Value == false); }
         }
 
-        public NorGate(int numberOfInputs = 2)
-        {
-            Inputs = new Input[numberOfInputs];
-        }
-
-        public void SetInput(int inputIndex, Input input)
-        {
-            Inputs[inputIndex] = input;
-        }
+        public NorGate(int numberOfInputs = 2) : base(numberOfInputs) { }
     }
 }

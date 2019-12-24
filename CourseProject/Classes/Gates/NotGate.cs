@@ -6,23 +6,13 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public class NotGate : Element
+    public class NotGate : Gate
     {
-        public override Input[] Inputs { get; }
-
-        public override bool[] Outputs
+        public override bool Output
         {
-            get { return new bool[] { !Inputs[0].Value }; }
+            get { return !Inputs[0].Value; }
         }
 
-        public NotGate()
-        {
-            Inputs = new Input[1];
-        }
-
-        public void SetInput(Input input)
-        {
-            Inputs[0] = input;
-        }
+        public NotGate() : base(1) { }
     }
 }

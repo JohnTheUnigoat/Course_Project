@@ -6,28 +6,13 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    class XnorGate : Element
+    public class XnorGate : Gate
     {
-        public override Input[] Inputs { get; }
-
-        public override bool[] Outputs
+        public override bool Output
         {
-            get
-            {
-                bool res = Inputs.Where(x => x.Value).Count() % 2 == 0;
-
-                return new bool[] { res };
-            }
+            get { return Inputs.Where(x => x.Value).Count() % 2 == 0; }
         }
 
-        public XnorGate(int numberOfInputs = 2)
-        {
-            Inputs = new Input[numberOfInputs];
-        }
-
-        public void SetInput(int inputIndex, Input input)
-        {
-            Inputs[inputIndex] = input;
-        }
+        public XnorGate(int numberOfInputs = 2) : base(numberOfInputs) { }
     }
 }
