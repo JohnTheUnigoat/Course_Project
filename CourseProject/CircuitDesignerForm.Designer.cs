@@ -52,11 +52,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.canvas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.canvas.Cursor = System.Windows.Forms.Cursors.Default;
             this.canvas.Location = new System.Drawing.Point(126, 12);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(669, 425);
             this.canvas.TabIndex = 0;
             this.canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.Canvas_Paint);
+            this.canvas.MouseEnter += new System.EventHandler(this.Canvas_MouseEnter);
+            this.canvas.MouseLeave += new System.EventHandler(this.Canvas_MouseLeave);
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseMove);
             // 
             // numericUpDown1

@@ -13,7 +13,7 @@ namespace CourseProject
 {
     public partial class CircuitDesignerForm : Form
     {
-        private int gridSize = 10;
+        private int gridSize = 20;
 
         private int pointerRadius = 4;
 
@@ -79,6 +79,16 @@ namespace CourseProject
             gfx.SmoothingMode = SmoothingMode.AntiAlias;
 
             DrawPointer(gfx);
+        }
+
+        private void Canvas_MouseEnter(object sender, EventArgs e)
+        {
+            Cursor.Hide();
+        }
+
+        private void Canvas_MouseLeave(object sender, EventArgs e)
+        {
+            Cursor.Show();
         }
     }
 }
