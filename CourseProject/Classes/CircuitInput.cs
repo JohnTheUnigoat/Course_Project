@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,10 @@ namespace CourseProject
         {
             get { return new bool[] { Value }; }
         }
+
+        public override Point[] InputPositions => throw new NotImplementedException();
+
+        public override Point[] OutputPositions => throw new NotImplementedException();
 
         public CircuitInput(bool value = false)
         {

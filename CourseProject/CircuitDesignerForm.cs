@@ -13,9 +13,9 @@ namespace CourseProject
 {
     public partial class CircuitDesignerForm : Form
     {
-        private int gridSize = 25;
+        private int gridSize = 10;
 
-        private int pointerRadius = 8;
+        private int pointerRadius = 4;
 
         private Point gridPointerPosition;
 
@@ -39,8 +39,11 @@ namespace CourseProject
             if (e.Y - gridPointerPosition.Y * gridSize > gridSize / 2)
                 gridPointerPosition.Y++;
 
-            InvalidatePointer(oldGridPointerPosition);
-            InvalidatePointer(gridPointerPosition);
+            if (oldGridPointerPosition != gridPointerPosition)
+            {
+                InvalidatePointer(oldGridPointerPosition);
+                InvalidatePointer(gridPointerPosition);
+            }
         }
 
         private void InvalidatePointer(Point gridPosition)
@@ -58,11 +61,11 @@ namespace CourseProject
 
         private void DrawPointer(Graphics gfx)
         {
-            Size pointerSize = new Size(pointerRadius, pointerRadius);
+            Size pointerSize = new Size(pointerRadius * 2, pointerRadius * 2);
 
             Point pointerPosition = new Point(
-                gridPointerPosition.X * gridSize,
-                gridPointerPosition.Y * gridSize);
+                gridPointerPosition.X * gridSize - pointerRadius,
+                gridPointerPosition.Y * gridSize - pointerRadius);
 
             Rectangle rect = new Rectangle(pointerPosition, pointerSize);
 

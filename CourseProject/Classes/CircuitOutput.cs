@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,5 +26,9 @@ namespace CourseProject
         {
             get { return Connection.Value; }
         }
+
+        public override Point[] InputPositions => throw new NotImplementedException();
+
+        public override Point[] OutputPositions => throw new NotImplementedException();
     }
 }

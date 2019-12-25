@@ -30,15 +30,15 @@ namespace CourseProject
         public Circuit(int numberOfInputs = 0, int numberOfOutputs = 0)
         {
             inputs = new List<CircuitInput>(numberOfInputs);
-            
-            for(int i = 0; i < numberOfInputs; i++)
+
+            for (int i = 0; i < numberOfInputs; i++)
             {
                 inputs.Add(new CircuitInput());
             }
 
             outputs = new List<CircuitOutput>(numberOfOutputs);
 
-            for(int i = 0; i < numberOfOutputs; i++)
+            for (int i = 0; i < numberOfOutputs; i++)
             {
                 outputs.Add(new CircuitOutput());
             }
