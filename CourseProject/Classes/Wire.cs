@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public class Connection : Element
+    public class Wire : Element
     {
-        public override Input[] Inputs { get; }
+        public override Connection[] Inputs { get; }
 
         public override bool[] Outputs
         {
             get { return new bool[] { Inputs[0].Value }; }
         }
 
-        public Connection()
+        public Wire()
         {
-            Inputs = new Input[1];
+            Inputs = new Connection[1];
         }
 
-        public Connection(Input input)
+        public Wire(Connection input)
         {
-            Inputs = new Input[] { input };
+            Inputs = new Connection[] { input };
         }
 
-        public void SetInput(Input input)
+        public void SetInput(Connection input)
         {
             Inputs[0] = input;
         }

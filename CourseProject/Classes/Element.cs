@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public struct Input
+    public struct Connection
     {
         public Element Source { get; set; }
 
-        public int OutputIndex { get; set; }
+        public uint SourceOutputIndex { get; set; }
 
         public bool IsSet
         {
@@ -24,20 +24,23 @@ namespace CourseProject
                 if (!IsSet)
                     return false;
 
-                return Source.Outputs[OutputIndex];
+                return Source.Outputs[SourceOutputIndex];
             }
         }
 
-        public Input(Element source, int outputIndex = 0)
+        public Connection(Element source, uint sourceOutputIndex = 0)
         {
+            if (sourceOutputIndex >= source.Outputs.Length)
+                throw new IndexOutOfRangeException();
+
             Source = source;
-            OutputIndex = outputIndex;
+            SourceOutputIndex = sourceOutputIndex;
         }
     }
 
     abstract public class Element
     {
-        abstract public Input[] Inputs { get; }
+        abstract public Connection[] Inputs { get; }
 
         abstract public bool[] Outputs { get; }
     }

@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public class CircuitInput : Element
+    public class CircuitOutput : Element
     {
-        public bool Value { get; set; }
+        public Connection Connection { get; set; }
 
-        private static Connection[] inputs = new Connection[0];
         public override Connection[] Inputs
         {
-            get { return inputs; }
+            get { return new Connection[] { Connection }; }
         }
 
+        private bool[] outputs = new bool[0];
         public override bool[] Outputs
         {
-            get { return new bool[] { Value }; }
+            get { return outputs; }
         }
 
-        public CircuitInput(bool value = false)
+        public bool Value
         {
-            Value = value;
+            get { return Connection.Value; }
         }
     }
 }

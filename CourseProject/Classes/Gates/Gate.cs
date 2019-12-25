@@ -8,7 +8,7 @@ namespace CourseProject
 {
     public abstract class Gate : Element
     {
-        public override Input[] Inputs { get; }
+        public override Connection[] Inputs { get; }
         
         public abstract bool Output { get; }
 
@@ -18,10 +18,10 @@ namespace CourseProject
 
         public Gate(int numberOfInputs)
         {
-            Inputs = new Input[numberOfInputs];
+            Inputs = new Connection[numberOfInputs];
         }
 
-        public void SetInput(int inputIndex, Input input)
+        public void SetInput(int inputIndex, Connection input)
         {
             Inputs[inputIndex] = input;
         }
