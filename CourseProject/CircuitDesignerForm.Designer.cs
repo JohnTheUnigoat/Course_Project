@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.canvas = new System.Windows.Forms.Panel();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numInputs = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.btWire = new System.Windows.Forms.Button();
             this.btXnor = new System.Windows.Forms.Button();
@@ -41,7 +41,7 @@
             this.btAnd = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.panel2 = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInputs)).BeginInit();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,15 +62,15 @@
             this.canvas.MouseLeave += new System.EventHandler(this.Canvas_MouseLeave);
             this.canvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseMove);
             // 
-            // numericUpDown1
+            // numInputs
             // 
-            this.numericUpDown1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
-            this.numericUpDown1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.numericUpDown1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.numericUpDown1.Location = new System.Drawing.Point(13, 391);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(75, 16);
-            this.numericUpDown1.TabIndex = 9;
+            this.numInputs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
+            this.numInputs.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.numInputs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.numInputs.Location = new System.Drawing.Point(13, 391);
+            this.numInputs.Name = "numInputs";
+            this.numInputs.Size = new System.Drawing.Size(75, 16);
+            this.numInputs.TabIndex = 9;
             // 
             // label1
             // 
@@ -95,6 +95,7 @@
             this.btWire.TabIndex = 7;
             this.btWire.Text = "Wire";
             this.btWire.UseVisualStyleBackColor = false;
+            this.btWire.Click += new System.EventHandler(this.btWire_Click);
             // 
             // btXnor
             // 
@@ -110,6 +111,7 @@
             this.btXnor.TabIndex = 6;
             this.btXnor.Text = "XNOR";
             this.btXnor.UseVisualStyleBackColor = false;
+            this.btXnor.Click += new System.EventHandler(this.btXnor_Click);
             // 
             // btXor
             // 
@@ -125,6 +127,7 @@
             this.btXor.TabIndex = 5;
             this.btXor.Text = "XOR";
             this.btXor.UseVisualStyleBackColor = false;
+            this.btXor.Click += new System.EventHandler(this.btXor_Click);
             // 
             // btNor
             // 
@@ -140,6 +143,7 @@
             this.btNor.TabIndex = 4;
             this.btNor.Text = "NOR";
             this.btNor.UseVisualStyleBackColor = false;
+            this.btNor.Click += new System.EventHandler(this.btNor_Click);
             // 
             // btNand
             // 
@@ -155,6 +159,7 @@
             this.btNand.TabIndex = 3;
             this.btNand.Text = "NAND";
             this.btNand.UseVisualStyleBackColor = false;
+            this.btNand.Click += new System.EventHandler(this.btNand_Click);
             // 
             // btNot
             // 
@@ -170,6 +175,7 @@
             this.btNot.TabIndex = 2;
             this.btNot.Text = "NOT";
             this.btNot.UseVisualStyleBackColor = false;
+            this.btNot.Click += new System.EventHandler(this.btNot_Click);
             // 
             // btOr
             // 
@@ -185,6 +191,7 @@
             this.btOr.TabIndex = 1;
             this.btOr.Text = "OR";
             this.btOr.UseVisualStyleBackColor = false;
+            this.btOr.Click += new System.EventHandler(this.btOr_Click);
             // 
             // btAnd
             // 
@@ -200,6 +207,7 @@
             this.btAnd.TabIndex = 0;
             this.btAnd.Text = "AND";
             this.btAnd.UseVisualStyleBackColor = false;
+            this.btAnd.Click += new System.EventHandler(this.btAnd_Click);
             // 
             // panel2
             // 
@@ -207,7 +215,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.numericUpDown1);
+            this.panel2.Controls.Add(this.numInputs);
             this.panel2.Controls.Add(this.btAnd);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.btOr);
@@ -233,7 +241,8 @@
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.Name = "CircuitDesignerForm";
             this.Text = "Circuit Designer";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.Load += new System.EventHandler(this.CircuitDesignerForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numInputs)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
@@ -243,7 +252,7 @@
         #endregion
 
         private System.Windows.Forms.Panel canvas;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numInputs;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btWire;
         private System.Windows.Forms.Button btXnor;
