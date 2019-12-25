@@ -53,6 +53,41 @@ namespace CourseProject
             }
         }
 
+        public override Rectangle Rect
+        {
+            get
+            {
+                Size size;
+                Point position;
+
+                switch (WireDirection)
+                {
+                    case Direction.Up:
+                        position = new Point(Position.X, Position.Y - Length);
+                        size = new Size(0, Length);
+                        break;
+                    case Direction.Down:
+                        position = Position;
+                        size = new Size(0, Length);
+                        break;
+                    case Direction.Left:
+                        position = new Point(Position.X - Length, Position.Y);
+                        size = new Size(Length, 0);
+                        break;
+                    case Direction.Right:
+                        position = Position;
+                        size = new Size(Length, 0);
+                        break;
+                    default:
+                        position = new Point();
+                        size = new Size();
+                        break;
+                }
+
+                return new Rectangle(position, size);
+            }
+        }
+
 
         public Wire()
         {

@@ -37,6 +37,16 @@ namespace CourseProject
             }
         }
 
+        public override Rectangle Rect
+        {
+            get
+            {
+                Size size = new Size(2, 2);
+
+                return new Rectangle(Position, size);
+            }
+        }
+
 
         public CircuitInput(bool value = false)
         {

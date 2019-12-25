@@ -42,6 +42,16 @@ namespace CourseProject
             get { return new Point[0]; }
         }
 
+        public override Rectangle Rect
+        {
+            get
+            {
+                Size size = new Size(2, 2);
+
+                return new Rectangle(Position, size);
+            }
+        }
+
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
         {

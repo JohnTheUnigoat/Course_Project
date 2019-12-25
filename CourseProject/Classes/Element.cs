@@ -49,6 +49,8 @@ namespace CourseProject
         //Visuals
         public Point Position { get; set; }
 
+        abstract public Rectangle Rect { get; }
+
         abstract public Point[] InputPositions { get; }
         abstract public Point[] OutputPositions { get; }
 

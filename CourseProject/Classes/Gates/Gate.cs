@@ -44,6 +44,16 @@ namespace CourseProject
             }
         }
 
+        public override Rectangle Rect
+        {
+            get
+            {
+                Size size = new Size(4, Inputs.Length + 1);
+
+                return new Rectangle(Position, size);
+            }
+        }
+
 
         public Gate(int numberOfInputs)
         {
