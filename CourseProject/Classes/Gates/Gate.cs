@@ -48,9 +48,10 @@ namespace CourseProject
         {
             get
             {
+                Point position = new Point(Position.X - 1, Position.Y);
                 Size size = new Size(4, Inputs.Length + 1);
 
-                return new Rectangle(Position, size);
+                return new Rectangle(position, size);
             }
         }
 

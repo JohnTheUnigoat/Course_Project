@@ -78,5 +78,14 @@ namespace CourseProject
                     gfx.DrawLine(pen, from, to);
             }
         }
+
+        public Rectangle GetInvalidateRect(int gridSize)
+        {
+            Rectangle invalidateRect = new Rectangle(
+                Rect.X * gridSize - 1, Rect.Y * gridSize - 1,
+                Rect.Width * gridSize + 2, Rect.Height * gridSize + 2);
+
+            return invalidateRect;
+        }
     }
 }

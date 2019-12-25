@@ -13,6 +13,8 @@ namespace CourseProject
 {
     public partial class CircuitDesignerForm : Form
     {
+        private Circuit circuit;
+
         private int gridSize = 20;
 
         private int pointerRadius = 4;
@@ -32,6 +34,8 @@ namespace CourseProject
 
         private void CircuitDesignerForm_Load(object sender, EventArgs e)
         {
+            circuit = new Circuit(2, 1);
+
             pointerBrush = Brushes.GreenYellow;
             selectedElement = Elements.None;
             numInputs.Value = 2;
@@ -88,6 +92,8 @@ namespace CourseProject
             Graphics gfx = e.Graphics;
 
             gfx.SmoothingMode = SmoothingMode.AntiAlias;
+
+            circuit.Draw(gfx, Pens.Wheat, Pens.GreenYellow, gridSize);
 
             DrawPointer(gfx);
         }
