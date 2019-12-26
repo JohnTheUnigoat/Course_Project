@@ -34,31 +34,11 @@ namespace CourseProject
 
         private void CircuitDesignerForm_Load(object sender, EventArgs e)
         {
-            circuit = new Circuit(2, 1);
+            circuit = new Circuit(6, 1);
 
             pointerBrush = Brushes.GreenYellow;
             selectedElement = Elements.None;
             numInputs.Value = 2;
-        }
-
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            Point oldGridPointerPosition = gridPointerPosition;
-
-            gridPointerPosition.X = e.X / gridSize;
-            gridPointerPosition.Y = e.Y / gridSize;
-
-            if (e.X - gridPointerPosition.X * gridSize > gridSize / 2)
-                gridPointerPosition.X++;
-
-            if (e.Y - gridPointerPosition.Y * gridSize > gridSize / 2)
-                gridPointerPosition.Y++;
-
-            if (oldGridPointerPosition != gridPointerPosition)
-            {
-                InvalidatePointer(oldGridPointerPosition);
-                InvalidatePointer(gridPointerPosition);
-            }
         }
 
         private void InvalidatePointer(Point gridPosition)
@@ -74,38 +54,178 @@ namespace CourseProject
             canvas.Invalidate(invalidateRect);
         }
 
-        private void DrawPointer(Graphics gfx)
-        {
-            Size pointerSize = new Size(pointerRadius * 2, pointerRadius * 2);
-
-            Point pointerPosition = new Point(
-                gridPointerPosition.X * gridSize - pointerRadius,
-                gridPointerPosition.Y * gridSize - pointerRadius);
-
-            Rectangle rect = new Rectangle(pointerPosition, pointerSize);
-
-            gfx.FillEllipse(pointerBrush, rect);
-        }
-
         private void Canvas_Paint(object sender, PaintEventArgs e)
         {
             Graphics gfx = e.Graphics;
 
             gfx.SmoothingMode = SmoothingMode.AntiAlias;
 
-            circuit.Draw(gfx, Pens.Wheat, Pens.GreenYellow, gridSize);
+            gfx.Clear(canvas.BackColor);
 
-            DrawPointer(gfx);
+            if (wire != null)
+                wire.Draw(gfx, Pens.Wheat, Pens.GreenYellow, new SolidBrush(canvas.BackColor), gridSize);
+
+
+            circuit.Draw(gfx, Pens.Wheat, Pens.GreenYellow, new SolidBrush(canvas.BackColor), gridSize);
+
         }
 
-        private void Canvas_MouseEnter(object sender, EventArgs e)
+        private Wire wire;
+
+        private Element element;
+
+        private void Canvas_MouseDown(object sender, MouseEventArgs e)
         {
-            Cursor.Hide();
+            Element connectedElement = null;
+
+            if (selectedElement == Elements.Wire)
+            {
+                foreach(var element in circuit.AllElements)
+                {
+                    if (element.InputPositions.Contains(gridPointerPosition) && !(element is Wire))
+                        return;
+
+                    if (element.OutputPositions.Contains(gridPointerPosition))
+                        connectedElement = element;
+                }
+
+                if (connectedElement == null)
+                    wire = new Wire();
+                else
+                    wire = new Wire(new Connection(connectedElement));
+
+                wire.Position = gridPointerPosition;
+            }
         }
 
-        private void Canvas_MouseLeave(object sender, EventArgs e)
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Cursor.Show();
+            Point oldGridPointerPosition = gridPointerPosition;
+
+            gridPointerPosition.X = e.X / gridSize;
+            gridPointerPosition.Y = e.Y / gridSize;
+
+            if (e.X - gridPointerPosition.X * gridSize > gridSize / 2)
+                gridPointerPosition.X++;
+
+            if (e.Y - gridPointerPosition.Y * gridSize > gridSize / 2)
+                gridPointerPosition.Y++;
+
+            if(selectedElement == Elements.Wire && wire != null)
+            {
+                if (wire.WireDirection == Wire.Direction.Undefined)
+                {
+                    int xOffset = gridPointerPosition.X - wire.Position.X;
+                    int yOffset = gridPointerPosition.Y - wire.Position.Y;
+
+                    if (!(xOffset == 0 && yOffset == 0))
+                    {
+                        if (Math.Abs(xOffset) > Math.Abs(yOffset))
+                        {
+                            if (xOffset > 0)
+                                wire.WireDirection = Wire.Direction.Right;
+                            else
+                                wire.WireDirection = Wire.Direction.Left;
+                        }
+                        else
+                        {
+                            if (yOffset > 0)
+                                wire.WireDirection = Wire.Direction.Down;
+                            else
+                                wire.WireDirection = Wire.Direction.Up;
+                        }
+                    }
+                }
+
+                canvas.Invalidate(wire.GetInvalidateRect(gridSize));
+
+                switch (wire.WireDirection)
+                {
+                    case Wire.Direction.Up:
+                        wire.Length = wire.Position.Y - gridPointerPosition.Y;
+                        break;
+                    case Wire.Direction.Down:
+                        wire.Length = gridPointerPosition.Y - wire.Position.Y;
+                        break;
+                    case Wire.Direction.Left:
+                        wire.Length = wire.Position.X - gridPointerPosition.X;
+                        break;
+                    case Wire.Direction.Right:
+                        wire.Length = gridPointerPosition.X - wire.Position.X;
+                        break;
+                }
+
+                canvas.Invalidate(wire.GetInvalidateRect(gridSize));
+            }
+        }
+
+        private void Canvas_MouseUp(object sender, MouseEventArgs e)
+        {
+            if(selectedElement == Elements.Wire)
+            {
+                if (wire == null)
+                    return;
+
+                if (circuit.AllElements.Any(x => !(x is Wire) && x.Rect.IntersectsWith(wire.Rect)))
+                {
+                    canvas.Invalidate(wire.GetInvalidateRect(gridSize));
+                    wire = null;
+                    return;
+                }
+
+                // check if wire output corresponds to any input
+                foreach (var element in circuit.AllElements)
+                {
+                    for(int i = 0; i < element.InputPositions.Length; i++)
+                    {
+                        if (gridPointerPosition == element.InputPositions[i])
+                        {
+                            element.SetInput(i, new Connection(wire));
+                            canvas.Refresh();
+                        }
+                    }
+                }
+
+                circuit.AddElement(wire);
+
+                wire = null;
+                return;
+            }
+
+            switch (selectedElement)
+            {
+                case Elements.AND:
+                    element = new AndGate((int)numInputs.Value);
+                    break;
+                case Elements.OR:
+                    element = new OrGate((int)numInputs.Value);
+                    break;
+                case Elements.NOT:
+                    element = new NotGate();
+                    break;
+                case Elements.NAND:
+                    element = new NandGate((int)numInputs.Value);
+                    break;
+                case Elements.NOR:
+                    element = new NorGate((int)numInputs.Value);
+                    break;
+                case Elements.XOR:
+                    element = new XorGate((int)numInputs.Value);
+                    break;
+                case Elements.XNOR:
+                    element = new XnorGate((int)numInputs.Value);
+                    break;
+                default:
+                    return;
+                    break;
+            }
+
+            element.Position = gridPointerPosition;
+
+            circuit.AddElement(element);
+
+            Rectangle rect = element.GetInvalidateRect(gridSize);
+            canvas.Invalidate(rect);
         }
 
         private void RemoveSelection()

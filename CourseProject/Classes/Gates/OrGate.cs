@@ -16,9 +16,9 @@ namespace CourseProject
 
         public OrGate(int numberOfInputs = 2) : base(numberOfInputs) { }
 
-        public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
+        public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
-            base.Draw(gfx, pen, activePen, gridSize);
+            base.Draw(gfx, pen, activePen, fillBrush, gridSize);
 
             Font font = new Font("Arial", (float)(gridSize * 0.6));
             var brush = new SolidBrush(pen.Color);

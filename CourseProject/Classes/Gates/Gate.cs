@@ -61,21 +61,16 @@ namespace CourseProject
             Inputs = new Connection[numberOfInputs];
         }
 
-        public void SetInput(int inputIndex, Connection input)
+        public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
-            Inputs[inputIndex] = input;
-        }
-
-
-        public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
-        {
-            base.Draw(gfx, pen, activePen, gridSize);
+            base.Draw(gfx, pen, activePen, fillBrush, gridSize);
 
             Size size = new Size(gridSize * 2, gridSize * (Inputs.Length + 1));
             Point position = new Point(Position.X * gridSize, Position.Y * gridSize);
 
             Rectangle rect = new Rectangle(position, size);
 
+            gfx.FillRectangle(fillBrush, rect);
             gfx.DrawRectangle(pen, rect);
         }
     }

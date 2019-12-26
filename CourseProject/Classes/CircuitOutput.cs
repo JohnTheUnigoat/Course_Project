@@ -9,12 +9,9 @@ namespace CourseProject
 {
     public class CircuitOutput : Element
     {
-        public Connection Connection { get; set; }
+        //public Connection Connection { get; set; }
 
-        public override Connection[] Inputs
-        {
-            get { return new Connection[] { Connection }; }
-        }
+        public override Connection[] Inputs { get; }
 
         private bool[] outputs = new bool[0];
         public override bool[] Outputs
@@ -24,7 +21,7 @@ namespace CourseProject
 
         public bool Value
         {
-            get { return Connection.Value; }
+            get { return Inputs[0].Value; }
         }
 
 
@@ -46,22 +43,29 @@ namespace CourseProject
         {
             get
             {
+                Point position = new Point(Position.X, Position.Y);
                 Size size = new Size(2, 2);
 
-                return new Rectangle(Position, size);
+                return new Rectangle(position, size);
             }
         }
 
 
-        public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
+        public CircuitOutput()
+        {
+            Inputs = new Connection[1];
+        }
+
+        public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
             Size size = new Size(gridSize, gridSize);
             Point position = new Point(Position.X * gridSize + gridSize / 2, Position.Y * gridSize + gridSize / 2);
 
             Rectangle rect = new Rectangle(position, size);
 
+            gfx.FillRectangle(fillBrush, rect);
             gfx.DrawRectangle(pen, rect);
-
+            
             Point from = new Point(InputPositions[0].X * gridSize, InputPositions[0].Y * gridSize);
             Point to = new Point(from.X + gridSize / 2, from.Y);
 

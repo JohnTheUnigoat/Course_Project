@@ -41,12 +41,11 @@ namespace CourseProject
 
     abstract public class Element
     {
-        //Logic
         abstract public Connection[] Inputs { get; }
 
         abstract public bool[] Outputs { get; }
 
-        //Visuals
+
         public Point Position { get; set; }
 
         abstract public Rectangle Rect { get; }
@@ -54,7 +53,13 @@ namespace CourseProject
         abstract public Point[] InputPositions { get; }
         abstract public Point[] OutputPositions { get; }
 
-        virtual public void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
+
+        public void SetInput(int inputIndex, Connection input)
+        {
+            Inputs[inputIndex] = input;
+        }
+
+        virtual public void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
             for(int i = 0; i < InputPositions.Length; i++)
             {
@@ -79,7 +84,7 @@ namespace CourseProject
             }
         }
 
-        public Rectangle GetInvalidateRect(int gridSize)
+        virtual public Rectangle GetInvalidateRect(int gridSize)
         {
             Rectangle invalidateRect = new Rectangle(
                 Rect.X * gridSize - 1, Rect.Y * gridSize - 1,

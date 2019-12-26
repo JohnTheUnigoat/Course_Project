@@ -28,13 +28,29 @@ namespace CourseProject
             get { return new ReadOnlyCollection<Element>(elements); }
         }
 
+        public ReadOnlyCollection<Element> AllElements
+        {
+            get
+            {
+                return new ReadOnlyCollection<Element>(inputs.Concat(elements).Concat(outputs).ToList());
+            }
+        }
+
+        public ReadOnlyCollection<Wire> Wires
+        {
+            get
+            {
+                return new ReadOnlyCollection<Wire>(elements.Where(x => x is Wire).Select(x => x as Wire).ToList());
+            }
+        }
+
         public Circuit(int numberOfInputs = 0, int numberOfOutputs = 0)
         {
             inputs = new List<CircuitInput>(numberOfInputs);
 
             for (int i = 0; i < numberOfInputs; i++)
             {
-                CircuitInput input = new CircuitInput();
+                CircuitInput input = new CircuitInput(true);
                 input.Position = new Point(1, i * 2 + 1);
                 inputs.Add(input);
             }
@@ -44,30 +60,35 @@ namespace CourseProject
             for (int i = 0; i < numberOfOutputs; i++)
             {
                 CircuitOutput output = new CircuitOutput();
-                output.Position = new Point(15, 1);
+                output.Position = new Point(25, 1);
                 outputs.Add(output);
             }
 
             elements = new List<Element>();
         }
 
-        public void AddInput() { inputs.Add(new CircuitInput()); }
-
-        public void AddOutput() { outputs.Add(new CircuitOutput()); }
-
-        public void AddElement(Element element) { elements.Add(element); }
-
-
-        public void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
+        public void AddInput()
         {
-            foreach (var input in inputs)
-                input.Draw(gfx, pen, activePen, gridSize);
+            inputs.Add(new CircuitInput());
+        }
 
-            foreach (var output in outputs)
-                output.Draw(gfx, pen, activePen, gridSize);
+        public void AddOutput()
+        {
+            outputs.Add(new CircuitOutput());
+        }
 
-            foreach(var element in elements)
-                element.Draw(gfx, pen, activePen, gridSize);
+        public void AddElement(Element element)
+        {
+            elements.Add(element);
+        }
+
+
+        public void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
+        {
+            foreach(var element in AllElements)
+            {
+                element.Draw(gfx, pen, activePen, fillBrush, gridSize);
+            }
         }
     }
 }

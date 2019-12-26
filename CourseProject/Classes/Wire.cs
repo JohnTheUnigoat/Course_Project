@@ -17,10 +17,37 @@ namespace CourseProject
         }
 
 
-        public enum Direction { Up, Down, Left, Right};
+        public enum Direction { Undefined, Up, Down, Left, Right};
         public Direction WireDirection { get; set; }
 
-        public int Length { get; set; }
+        private int length;
+        public int Length {
+            get { return length; }
+            set
+            {
+                length = value;
+                if(length < 0)
+                {
+                    length = -length;
+
+                    switch (WireDirection)
+                    {
+                        case Direction.Up:
+                            WireDirection = Direction.Down;
+                            break;
+                        case Direction.Down:
+                            WireDirection = Direction.Up;
+                            break;
+                        case Direction.Left:
+                            WireDirection = Direction.Right;
+                            break;
+                        case Direction.Right:
+                            WireDirection = Direction.Left;
+                            break;
+                    }
+                }
+            }
+        }
 
         public override Point[] InputPositions
         {
@@ -79,8 +106,8 @@ namespace CourseProject
                         size = new Size(Length, 0);
                         break;
                     default:
-                        position = new Point();
-                        size = new Size();
+                        position = Position;
+                        size = new Size(0, 0);
                         break;
                 }
 
@@ -105,15 +132,74 @@ namespace CourseProject
         }
 
 
-        public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
+        public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
             Point from = new Point(Position.X * gridSize, Position.Y * gridSize);
             Point to = new Point(OutputPositions[0].X * gridSize, OutputPositions[0].Y * gridSize);
 
+            Point[] arrow = new Point[3];
+            arrow[0] = new Point(
+                (Position.X + OutputPositions[0].X) * gridSize / 2,
+                (Position.Y + OutputPositions[0].Y) * gridSize / 2);
+
+
+            int arrowLength = gridSize / 2;
+            int arrowWidth = gridSize / 4;
+
+            switch (WireDirection)
+            {
+                case Direction.Up:
+                    arrow[0].Y -= gridSize / 4;
+                    arrow[1] = new Point(arrow[0].X - arrowWidth, arrow[0].Y + arrowLength);
+                    arrow[2] = new Point(arrow[0].X + arrowWidth, arrow[0].Y + arrowLength);
+                    break;
+                case Direction.Down:
+                    arrow[0].Y += gridSize / 4;
+                    arrow[1] = new Point(arrow[0].X - arrowWidth, arrow[0].Y - arrowLength);
+                    arrow[2] = new Point(arrow[0].X + arrowWidth, arrow[0].Y - arrowLength);
+                    break;
+                case Direction.Left:
+                    arrow[0].X -= gridSize / 4;
+                    arrow[1] = new Point(arrow[0].X + arrowLength, arrow[0].Y - arrowWidth);
+                    arrow[2] = new Point(arrow[0].X + arrowLength, arrow[0].Y + arrowWidth);
+                    break;
+                case Direction.Right:
+                    arrow[0].X += gridSize / 4;
+                    arrow[1] = new Point(arrow[0].X - arrowLength, arrow[0].Y - arrowWidth);
+                    arrow[2] = new Point(arrow[0].X - arrowLength, arrow[0].Y + arrowWidth);
+                    break;
+                default:
+                    break;
+            }
+
             if (Outputs[0] == true)
+            {
                 gfx.DrawLine(activePen, from, to);
+                gfx.FillPolygon(new SolidBrush(activePen.Color), arrow);
+            }
             else
+            {
                 gfx.DrawLine(pen, from, to);
+                gfx.FillPolygon(new SolidBrush(pen.Color), arrow);
+            }
+        }
+
+        public override Rectangle GetInvalidateRect(int gridSize)
+        {
+            Rectangle rect = base.GetInvalidateRect(gridSize);
+
+            if(rect.Width > rect.Height)
+            {
+                rect.Y -= gridSize / 2;
+                rect.Height += gridSize;
+            }
+            else
+            {
+                rect.X -= gridSize / 2;
+                rect.Width += gridSize;
+            }
+
+            return rect;
         }
     }
 }
