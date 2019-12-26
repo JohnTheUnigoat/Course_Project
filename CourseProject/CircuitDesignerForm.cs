@@ -23,7 +23,7 @@ namespace CourseProject
 
         private Brush pointerBrush;
 
-        private enum Elements { None, AND, OR, NOT, NAND, NOR, XOR, XNOR, Wire };
+        private enum Elements { Edit, AND, OR, NOT, NAND, NOR, XOR, XNOR, Wire };
 
         private Elements selectedElement;
 
@@ -37,7 +37,7 @@ namespace CourseProject
             circuit = new Circuit(6, 1);
 
             pointerBrush = Brushes.GreenYellow;
-            selectedElement = Elements.None;
+            selectedElement = Elements.Edit;
             numInputs.Value = 2;
         }
 
@@ -194,6 +194,8 @@ namespace CourseProject
 
             switch (selectedElement)
             {
+                case Elements.Edit:
+                    return;
                 case Elements.AND:
                     element = new AndGate((int)numInputs.Value);
                     break;
@@ -217,7 +219,6 @@ namespace CourseProject
                     break;
                 default:
                     return;
-                    break;
             }
 
             element.Position = gridPointerPosition;
@@ -230,8 +231,7 @@ namespace CourseProject
 
         private void RemoveSelection()
         {
-            selectedElement = Elements.None;
-
+            btEdit.FlatAppearance.BorderSize = 0;
             btAnd.FlatAppearance.BorderSize = 0;
             btOr.FlatAppearance.BorderSize = 0;
             btNot.FlatAppearance.BorderSize = 0;
@@ -240,6 +240,14 @@ namespace CourseProject
             btXor.FlatAppearance.BorderSize = 0;
             btXnor.FlatAppearance.BorderSize = 0;
             btWire.FlatAppearance.BorderSize = 0;
+        }
+
+        private void btEdit_Click(object sender, EventArgs e)
+        {
+            RemoveSelection();
+            selectedElement = Elements.Edit;
+            btEdit.FlatAppearance.BorderSize = 2;
+            numInputs.Enabled = false;
         }
 
         private void btAnd_Click(object sender, EventArgs e)
@@ -304,6 +312,22 @@ namespace CourseProject
             selectedElement = Elements.Wire;
             btWire.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = false;
+        }
+
+        private void canvas_DoubleClick(object sender, EventArgs e)
+        {
+            if (selectedElement != Elements.Edit)
+                return;
+
+            foreach (var element in (circuit.AllElements.Where(x => x.Rect.Contains(gridPointerPosition))))
+            {
+                if (element is CircuitInput)
+                {
+                    (element as CircuitInput).Toggle();
+                    canvas.Refresh();
+                }
+            }
+
         }
     }
 }

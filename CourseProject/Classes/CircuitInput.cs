@@ -88,5 +88,10 @@ namespace CourseProject
 
             gfx.DrawString(displayValue, font, brush, rect, format);
         }
+
+        public void Toggle()
+        {
+            Value = !Value;
+        }
     }
 }
