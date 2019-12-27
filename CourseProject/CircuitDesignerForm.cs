@@ -20,9 +20,13 @@ namespace CourseProject
 
         private Point gridPointerPosition;
 
-        private enum Tools { Edit, AND, OR, NOT, NAND, NOR, XOR, XNOR, Wire };
-
+        private enum Tools { Edit, AddElement, Wire };
+    
         private Tools selectedTool;
+
+        private enum Elements { AND, OR, NOT, NAND, NOR, XOR, XNOR };
+
+        private Elements selectedAddElement;
 
         public CircuitDesignerForm()
         {
@@ -275,7 +279,7 @@ namespace CourseProject
             {
                 if (createdWire.WireDirection == wire.WireDirection)
                 {
-                    if (createdWire.Position == wire.OutputPositions[0] && wire.OutputCounter == 1)
+                    if (createdWire.Position == wire.OutputPositions[0] && wire.OutputCounter == 0)
                         adjacentInput = wire;
 
                     if (createdWire.OutputPositions[0] == wire.Position)
@@ -355,26 +359,36 @@ namespace CourseProject
             {
                 case Tools.Edit:
                     return;
-                case Tools.AND:
-                    createdElement = new AndGate((int)numInputs.Value);
-                    break;
-                case Tools.OR:
-                    createdElement = new OrGate((int)numInputs.Value);
-                    break;
-                case Tools.NOT:
-                    createdElement = new NotGate();
-                    break;
-                case Tools.NAND:
-                    createdElement = new NandGate((int)numInputs.Value);
-                    break;
-                case Tools.NOR:
-                    createdElement = new NorGate((int)numInputs.Value);
-                    break;
-                case Tools.XOR:
-                    createdElement = new XorGate((int)numInputs.Value);
-                    break;
-                case Tools.XNOR:
-                    createdElement = new XnorGate((int)numInputs.Value);
+                case Tools.AddElement:
+                    switch (selectedAddElement)
+                    {
+                        case Elements.AND:
+                            createdElement = new AndGate((int)numInputs.Value);
+                            break;
+                        case Elements.OR:
+                            createdElement = new OrGate((int)numInputs.Value);
+                            break;
+                        case Elements.NOT:
+                            createdElement = new NotGate();
+                            break;
+                        case Elements.NAND:
+                            createdElement = new NandGate((int)numInputs.Value);
+
+                            break;
+                        case Elements.NOR:
+                            createdElement = new NorGate((int)numInputs.Value);
+
+                            break;
+                        case Elements.XOR:
+                            createdElement = new XorGate((int)numInputs.Value);
+
+                            break;
+                        case Elements.XNOR:
+                            createdElement = new XnorGate((int)numInputs.Value);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 default:
                     return;
@@ -412,7 +426,8 @@ namespace CourseProject
         private void btAnd_Click(object sender, EventArgs e)
         {
             RemoveSelection();
-            selectedTool = Tools.AND;
+            selectedTool = Tools.AddElement;
+            selectedAddElement = Elements.AND;
             btAnd.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = true;
         }
@@ -420,7 +435,8 @@ namespace CourseProject
         private void btOr_Click(object sender, EventArgs e)
         {
             RemoveSelection();
-            selectedTool = Tools.OR;
+            selectedTool = Tools.AddElement;
+            selectedAddElement = Elements.OR;
             btOr.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = true;
         }
@@ -428,7 +444,8 @@ namespace CourseProject
         private void btNot_Click(object sender, EventArgs e)
         {
             RemoveSelection();
-            selectedTool = Tools.NOT;
+            selectedTool = Tools.AddElement;
+            selectedAddElement = Elements.NOT;
             btNot.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = false;
         }
@@ -436,7 +453,8 @@ namespace CourseProject
         private void btNand_Click(object sender, EventArgs e)
         {
             RemoveSelection();
-            selectedTool = Tools.NAND;
+            selectedTool = Tools.AddElement;
+            selectedAddElement = Elements.NAND;
             btNand.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = true;
         }
@@ -444,7 +462,8 @@ namespace CourseProject
         private void btNor_Click(object sender, EventArgs e)
         {
             RemoveSelection();
-            selectedTool = Tools.NOR;
+            selectedTool = Tools.AddElement;
+            selectedAddElement = Elements.NOR;
             btNor.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = true;
         }
@@ -452,7 +471,8 @@ namespace CourseProject
         private void btXor_Click(object sender, EventArgs e)
         {
             RemoveSelection();
-            selectedTool = Tools.XOR;
+            selectedTool = Tools.AddElement;
+            selectedAddElement = Elements.XOR;
             btXor.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = true;
         }
@@ -460,7 +480,8 @@ namespace CourseProject
         private void btXnor_Click(object sender, EventArgs e)
         {
             RemoveSelection();
-            selectedTool = Tools.XNOR;
+            selectedTool = Tools.AddElement;
+            selectedAddElement = Elements.XNOR;
             btXnor.FlatAppearance.BorderSize = 2;
             numInputs.Enabled = true;
         }

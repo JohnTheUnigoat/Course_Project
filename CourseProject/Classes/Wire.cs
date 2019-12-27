@@ -139,9 +139,9 @@ namespace CourseProject
         }
 
 
-        public void SetInput(Connection input)
+        public void SetInput(Connection input) 
         {
-            Inputs[0] = input;
+            SetInput(0, input);
         }
 
 

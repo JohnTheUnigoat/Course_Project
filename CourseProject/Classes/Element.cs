@@ -55,12 +55,23 @@ namespace CourseProject
         abstract public Rectangle Rect { get; }
 
         abstract public Point[] InputPositions { get; }
+
         abstract public Point[] OutputPositions { get; }
 
+        private List<Element> connectedToOutputs = new List<Element>();
+
+
+        private void AddOutputElement(Element element)
+        {
+            connectedToOutputs.Add(element);
+        }
 
         public void SetInput(int inputIndex, Connection input)
         {
             Inputs[inputIndex] = input;
+
+            if (input.Source != null)
+                input.Source.AddOutputElement(this);
         }
 
         virtual public void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
