@@ -93,7 +93,7 @@ namespace CourseProject
 
             foreach (var element in AllElements)
             {
-                element.Draw(gfx, pen, activePen, fillBrush, gridSize);
+                element.Draw(gfx, pen, activePen, gridSize);
             }
         }
 

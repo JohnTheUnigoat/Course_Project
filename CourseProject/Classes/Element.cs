@@ -63,7 +63,7 @@ namespace CourseProject
             Inputs[inputIndex] = input;
         }
 
-        virtual public void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
+        virtual public void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
         {
             for(int i = 0; i < InputPositions.Length; i++)
             {

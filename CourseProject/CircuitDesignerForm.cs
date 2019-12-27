@@ -50,7 +50,7 @@ namespace CourseProject
             gfx.Clear(canvas.BackColor);
 
             if (createdWire != null)
-                createdWire.Draw(gfx, Pens.Wheat, Pens.GreenYellow, new SolidBrush(canvas.BackColor), gridSize);
+                createdWire.Draw(gfx, Pens.Wheat, Pens.GreenYellow, gridSize);
 
             circuit.Draw(gfx, Pens.Wheat, Pens.GreenYellow, new SolidBrush(canvas.BackColor), gridSize);
         }
@@ -103,10 +103,8 @@ namespace CourseProject
 
             foreach (var element in circuit.AllElements)
             {
-                if (element.InputPositions.Contains(gridPointerPosition) && !(element is Wire))
-                    return;
-
-                if ((element is Wire) && PointInWire(gridPointerPosition, element as Wire))
+                // prevent wire from overlaping with element
+                if (element.InputPositions.Contains(gridPointerPosition))
                     return;
 
                 if (element.OutputPositions.Contains(gridPointerPosition))
@@ -126,7 +124,7 @@ namespace CourseProject
 
         private void Canvas_MouseDown(object sender, MouseEventArgs e)
         {
-            if (selectedTool == Tools.Wire)
+            if (selectedTool == Tools.Wire && createdWire == null)
             {
                 CreateNewWire();
             }
@@ -300,12 +298,13 @@ namespace CourseProject
                 createdWire = null;
             }
 
-            if (createdWire != null && createdWire.Length > 0)
-            {
-                circuit.AddElement(createdWire);
-                createdWire = null;
-            }
 
+
+            // add wire to circuit
+            if (createdWire != null && createdWire.Length > 0)
+                circuit.AddElement(createdWire);
+
+            createdWire = null;
             canvas.Refresh();
         }
 

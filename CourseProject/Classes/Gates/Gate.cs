@@ -71,16 +71,15 @@ namespace CourseProject
             IsTraced = false;
         }
 
-        public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
+        public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
         {
-            base.Draw(gfx, pen, activePen, fillBrush, gridSize);
+            base.Draw(gfx, pen, activePen, gridSize);
 
             Size size = new Size(gridSize * 2, gridSize * (Inputs.Length + 1));
             Point position = new Point(Position.X * gridSize, Position.Y * gridSize);
 
             Rectangle rect = new Rectangle(position, size);
 
-            gfx.FillRectangle(fillBrush, rect);
             gfx.DrawRectangle(pen, rect);
         }
 

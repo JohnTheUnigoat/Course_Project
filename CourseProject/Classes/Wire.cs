@@ -145,8 +145,11 @@ namespace CourseProject
         }
 
 
-        public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
+        public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
         {
+            SolidBrush brush = new SolidBrush(pen.Color);
+            SolidBrush activeBrush = new SolidBrush(activePen.Color);
+
             Point from = new Point(Position.X * gridSize, Position.Y * gridSize);
             Point to = new Point(OutputPositions[0].X * gridSize, OutputPositions[0].Y * gridSize);
 
@@ -185,15 +188,29 @@ namespace CourseProject
                     break;
             }
 
+            int nodeRadius = gridSize / 5;
+
+            Point nodePosition = new Point(OutputPositions[0].X * gridSize - nodeRadius, OutputPositions[0].Y * gridSize - nodeRadius);
+            Size nodeSize = new Size(nodeRadius * 2, nodeRadius * 2);
+            Rectangle nodeRect = new Rectangle(
+                nodePosition,
+                new Size(nodeRadius * 2, nodeRadius * 2));
+
             if (Outputs[0] == true)
             {
                 gfx.DrawLine(activePen, from, to);
-                gfx.FillPolygon(new SolidBrush(activePen.Color), arrow);
+                gfx.FillPolygon(activeBrush, arrow);
+
+                if (OutputCounter > 1)
+                    gfx.FillRectangle(activeBrush, nodeRect);
             }
             else
             {
                 gfx.DrawLine(pen, from, to);
-                gfx.FillPolygon(new SolidBrush(pen.Color), arrow);
+                gfx.FillPolygon(brush, arrow);
+
+                if (OutputCounter > 1)
+                    gfx.FillRectangle(brush, nodeRect);
             }
         }
 

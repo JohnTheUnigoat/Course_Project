@@ -55,14 +55,13 @@ namespace CourseProject
         }
 
 
-        public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
+        public override void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
         {
             Size size = new Size(gridSize, gridSize);
             Point position = new Point(Position.X * gridSize + gridSize / 2, Position.Y * gridSize + gridSize / 2);
 
             Rectangle rect = new Rectangle(position, size);
 
-            gfx.FillRectangle(fillBrush, rect);
             gfx.DrawRectangle(pen, rect);
 
             Point from = new Point(OutputPositions[0].X * gridSize, OutputPositions[0].Y * gridSize);
