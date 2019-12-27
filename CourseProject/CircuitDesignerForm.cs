@@ -57,6 +57,7 @@ namespace CourseProject
 
 
         private Wire createdWire;
+        private Element createdWireInput;
 
         private Element createdElement;
 
@@ -99,25 +100,28 @@ namespace CourseProject
 
         private void CreateNewWire()
         {
-            Element connectedElement = null;
+            createdWireInput = null;
+
+            bool isOnInput = false;
 
             foreach (var element in circuit.AllElements)
             {
-                // prevent wire from overlaping with element
                 if (element.InputPositions.Contains(gridPointerPosition))
-                    return;
+                {
+                    isOnInput = true;
+                }
 
                 if (element.OutputPositions.Contains(gridPointerPosition))
                 {
-                    connectedElement = element;
+                    createdWireInput = element;
                     break;
                 }
             }
 
-            createdWire = new Wire();
+            if (isOnInput && createdWireInput == null)
+                return;
 
-            if (connectedElement != null)
-                createdWire.SetInput(new Connection(connectedElement));
+            createdWire = new Wire();
 
             createdWire.Position = gridPointerPosition;
         }
@@ -264,6 +268,8 @@ namespace CourseProject
             Wire adjacentInput = null;
             Wire adjacentOutput = null;
 
+            Wire wireToSplit = null;
+
             //merge wires if needed
             foreach (var wire in circuit.Wires)
             {
@@ -277,6 +283,11 @@ namespace CourseProject
 
                     if (adjacentInput != null && adjacentOutput != null)
                         break;
+                }
+                else if (PointInWire(createdWire.Position, wire))
+                {
+                    wireToSplit = wire;
+                    break;
                 }
             }
 
@@ -298,13 +309,36 @@ namespace CourseProject
                 createdWire = null;
             }
 
+            if (wireToSplit != null)
+            {
+                Wire firstHalf = new Wire();
+                firstHalf.Position = wireToSplit.Position;
+                firstHalf.WireDirection = wireToSplit.WireDirection;
+                firstHalf.Length = 
+                    Math.Abs(wireToSplit.Position.X - createdWire.Position.X) + 
+                    Math.Abs(wireToSplit.Position.Y - createdWire.Position.Y);
+                firstHalf.SetInput(wireToSplit.Inputs[0]);
 
+                wireToSplit.Position = createdWire.Position;
+                wireToSplit.Length -= firstHalf.Length;
+
+                wireToSplit.SetInput(new Connection(firstHalf));
+                createdWire.SetInput(new Connection(firstHalf));
+
+                circuit.AddElement(firstHalf);
+            }
 
             // add wire to circuit
             if (createdWire != null && createdWire.Length > 0)
+            {
+                if(createdWireInput != null)
+                    createdWire.SetInput(new Connection(createdWireInput));
+
                 circuit.AddElement(createdWire);
+            }
 
             createdWire = null;
+            createdWireInput = null;
             canvas.Refresh();
         }
 

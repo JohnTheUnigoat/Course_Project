@@ -233,5 +233,7 @@ namespace CourseProject
         }
 
         public void AddOutput() { OutputCounter++; }
+
+        public void RemoveOutput() { OutputCounter--; }
     }
 }
