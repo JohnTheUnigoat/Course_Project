@@ -10,11 +10,20 @@ namespace CourseProject
     public abstract class Gate : Element
     {
         public override Connection[] Inputs { get; }
-        
-        public abstract bool Output { get; }
+
+        protected bool output;
 
         public override bool[] Outputs {
-            get { return new bool[] { Output }; }
+            get
+            {
+                if (!IsTraced)
+                {
+                    IsTraced = true;
+                    CalculateOutput();
+                }
+
+                return new bool[] { output };
+            }
         }
 
 
@@ -59,6 +68,7 @@ namespace CourseProject
         public Gate(int numberOfInputs)
         {
             Inputs = new Connection[numberOfInputs];
+            IsTraced = false;
         }
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
@@ -73,5 +83,8 @@ namespace CourseProject
             gfx.FillRectangle(fillBrush, rect);
             gfx.DrawRectangle(pen, rect);
         }
+
+        //Sets the output field, returns true if output value changed
+        abstract protected void CalculateOutput();
     }
 }

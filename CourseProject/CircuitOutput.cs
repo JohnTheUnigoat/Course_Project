@@ -54,7 +54,6 @@ namespace CourseProject
         public CircuitOutput()
         {
             Inputs = new Connection[1];
-            IsTraced = true;
         }
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)

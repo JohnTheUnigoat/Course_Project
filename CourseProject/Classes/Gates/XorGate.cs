@@ -9,11 +9,6 @@ namespace CourseProject
 {
     public class XorGate : Gate
     {
-        public override bool Output
-        {
-            get { return Inputs.Where(x => x.Value).Count() % 2 == 1; }
-        }
-
         public XorGate(int numberOfInputs = 2) : base(numberOfInputs) { }
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
@@ -32,6 +27,11 @@ namespace CourseProject
             Rectangle rect = new Rectangle(position, size);
 
             gfx.DrawString("=1", font, Brushes.Wheat, rect, format);
+        }
+
+        protected override void CalculateOutput()
+        {
+            output = Inputs.Where(x => x.Value).Count() % 2 == 1;
         }
     }
 }

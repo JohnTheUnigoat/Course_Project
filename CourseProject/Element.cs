@@ -45,7 +45,6 @@ namespace CourseProject
 
         abstract public bool[] Outputs { get; }
 
-        public bool IsTraced { protected get; set; }
 
         public Point Position { get; set; }
 

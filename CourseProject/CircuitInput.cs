@@ -7,55 +7,52 @@ using System.Threading.Tasks;
 
 namespace CourseProject
 {
-    public class CircuitOutput : Element
+    public class CircuitInput : Element
     {
-        //public Connection Connection { get; set; }
+        public bool Value { get; set; }
 
-        public override Connection[] Inputs { get; }
-
-        private bool[] outputs = new bool[0];
-        public override bool[] Outputs
+        private static Connection[] inputs = new Connection[0];
+        public override Connection[] Inputs
         {
-            get { return outputs; }
+            get { return inputs; }
         }
 
-        public bool Value
+        public override bool[] Outputs
         {
-            get { return Inputs[0].Value; }
+            get { return new bool[] { Value }; }
         }
 
 
         public override Point[] InputPositions
         {
-            get
-            {
-                Point inputPosition = new Point(Position.X, Position.Y + 1);
-                return new Point[] { inputPosition };
-            }
+            get { return new Point[0]; }
         }
 
         public override Point[] OutputPositions
         {
-            get { return new Point[0]; }
+            get
+            {
+                Point outputPosition = new Point(Position.X + 2, Position.Y + 1);
+                return new Point[] { outputPosition };
+            }
         }
 
         public override Rectangle Rect
         {
             get
             {
-                Point position = new Point(Position.X, Position.Y);
                 Size size = new Size(2, 2);
 
-                return new Rectangle(position, size);
+                return new Rectangle(Position, size);
             }
         }
 
 
-        public CircuitOutput()
+        public CircuitInput(bool value = false)
         {
-            Inputs = new Connection[1];
-            IsTraced = true;
+            Value = value;
         }
+
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
@@ -66,9 +63,9 @@ namespace CourseProject
 
             gfx.FillRectangle(fillBrush, rect);
             gfx.DrawRectangle(pen, rect);
-            
-            Point from = new Point(InputPositions[0].X * gridSize, InputPositions[0].Y * gridSize);
-            Point to = new Point(from.X + gridSize / 2, from.Y);
+
+            Point from = new Point(OutputPositions[0].X * gridSize, OutputPositions[0].Y * gridSize);
+            Point to = new Point(from.X - gridSize / 2, from.Y);
 
             string displayValue;
 
@@ -89,7 +86,12 @@ namespace CourseProject
             var format = new StringFormat();
             format.Alignment = StringAlignment.Center;
 
-            gfx.DrawString(displayValue, font, Brushes.Wheat, rect, format);
+            gfx.DrawString(displayValue, font, brush, rect, format);
+        }
+
+        public void Toggle()
+        {
+            Value = !Value;
         }
     }
 }

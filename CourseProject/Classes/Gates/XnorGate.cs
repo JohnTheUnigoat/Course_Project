@@ -9,11 +9,6 @@ namespace CourseProject
 {
     public class XnorGate : Gate
     {
-        public override bool Output
-        {
-            get { return Inputs.Where(x => x.Value).Count() % 2 == 0; }
-        }
-
         public XnorGate(int numberOfInputs = 2) : base(numberOfInputs) { }
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
@@ -21,7 +16,7 @@ namespace CourseProject
             Point from = new Point(OutputPositions[0].X * gridSize - gridSize / 2, OutputPositions[0].Y * gridSize);
             Point to = new Point(from.X - gridSize / 2, from.Y - gridSize / 3);
 
-            if (Output == true)
+            if (output == true)
                 gfx.DrawLine(activePen, from, to);
             else
                 gfx.DrawLine(pen, from, to);
@@ -40,6 +35,11 @@ namespace CourseProject
             Rectangle rect = new Rectangle(position, size);
 
             gfx.DrawString("=1", font, Brushes.Wheat, rect, format);
+        }
+
+        protected override void CalculateOutput()
+        {
+            output = Inputs.Where(x => x.Value).Count() % 2 == 0;
         }
     }
 }

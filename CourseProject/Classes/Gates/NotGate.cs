@@ -9,24 +9,19 @@ namespace CourseProject
 {
     public class NotGate : Gate
     {
-        public override bool Output
-        {
-            get { return !Inputs[0].Value; }
-        }
-
         public NotGate() : base(1) { }
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
+            base.Draw(gfx, pen, activePen, fillBrush, gridSize);
+
             Point from = new Point(OutputPositions[0].X * gridSize - gridSize / 2, OutputPositions[0].Y * gridSize);
             Point to = new Point(from.X - gridSize / 2, from.Y - gridSize / 3);
 
-            if (Output == true)
+            if (output == true)
                 gfx.DrawLine(activePen, from, to);
             else
                 gfx.DrawLine(pen, from, to);
-
-            base.Draw(gfx, pen, activePen, fillBrush, gridSize);
 
             Font font = new Font("Arial", (float)(gridSize * 0.6));
             var brush = new SolidBrush(pen.Color);
@@ -40,6 +35,11 @@ namespace CourseProject
             Rectangle rect = new Rectangle(position, size);
 
             gfx.DrawString("1", font, Brushes.Wheat, rect, format);
+        }
+
+        protected override void CalculateOutput()
+        {
+            output = !Inputs[0].Value;
         }
     }
 }

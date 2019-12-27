@@ -324,9 +324,10 @@ namespace CourseProject
                 if (element is CircuitInput)
                 {
                     (element as CircuitInput).Toggle();
-                    canvas.Refresh();
                 }
             }
+
+            canvas.Refresh();
 
         }
     }

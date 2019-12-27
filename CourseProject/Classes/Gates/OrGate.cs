@@ -9,11 +9,6 @@ namespace CourseProject
 {
     public class OrGate : Gate
     {
-        public override bool Output
-        {
-            get { return Inputs.Any(x => x.Value); }
-        }
-
         public OrGate(int numberOfInputs = 2) : base(numberOfInputs) { }
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
@@ -32,6 +27,11 @@ namespace CourseProject
             Rectangle rect = new Rectangle(position, size);
 
             gfx.DrawString("1", font, Brushes.Wheat, rect, format);
+        }
+
+        protected override void CalculateOutput()
+        {
+            output = Inputs.Any(x => x.Value);
         }
     }
 }

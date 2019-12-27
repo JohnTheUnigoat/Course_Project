@@ -85,18 +85,10 @@ namespace CourseProject
 
         public void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
-            Retrace();
-
-            foreach (var element in AllElements)
+            foreach(var element in AllElements)
             {
                 element.Draw(gfx, pen, activePen, fillBrush, gridSize);
             }
-        }
-
-        public void Retrace()
-        {
-            foreach (var element in Elements)
-                element.IsTraced = false;
         }
     }
 }

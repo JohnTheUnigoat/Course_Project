@@ -55,8 +55,8 @@
     <Compile Include="Classes\Circuit.cs" />
     <Compile Include="Classes\CircuitInput.cs" />
     <Compile Include="Classes\CircuitOutput.cs" />
-    <Compile Include="Classes\Wire.cs" />
     <Compile Include="Classes\Element.cs" />
+    <Compile Include="Classes\Wire.cs" />
     <Compile Include="Classes\Gates\AndGate.cs" />
     <Compile Include="Classes\Gates\Gate.cs" />
     <Compile Include="Classes\Gates\NandGate.cs" />

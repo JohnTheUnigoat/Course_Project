@@ -11,20 +11,9 @@ namespace CourseProject
     {
         public override Connection[] Inputs { get; }
 
-
-        private bool output;
         public override bool[] Outputs
         {
-            get
-            {
-                if (!IsTraced)
-                {
-                    IsTraced = true;
-                    output = Inputs[0].Value;
-                }
-
-                return new bool[] { output };
-            }
+            get { return new bool[] { Inputs[0].Value }; }
         }
 
 
@@ -130,7 +119,6 @@ namespace CourseProject
         public Wire()
         {
             Inputs = new Connection[1];
-            //ValueChanged = false;
         }
 
         public Wire(Connection input)

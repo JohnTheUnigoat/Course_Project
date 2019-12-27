@@ -9,11 +9,6 @@ namespace CourseProject
 {
     public class AndGate : Gate
     {
-        public override bool Output
-        {
-            get { return Inputs.All(x => x.Value); }
-        }
-
         public AndGate(int numberOfInputs = 2) : base(numberOfInputs) { }
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
@@ -32,6 +27,11 @@ namespace CourseProject
             Rectangle rect = new Rectangle(position, size);
 
             gfx.DrawString("&", font, Brushes.Wheat, rect, format);
+        }
+
+        protected override void CalculateOutput()
+        {
+            output = Inputs.All(x => x.Value);
         }
     }
 }

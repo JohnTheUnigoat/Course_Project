@@ -51,6 +51,7 @@ namespace CourseProject
         public CircuitInput(bool value = false)
         {
             Value = value;
+            IsTraced = true;
         }
 
 
