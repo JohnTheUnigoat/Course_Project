@@ -13,6 +13,8 @@ namespace CourseProject
 
         public override void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {
+            base.Draw(gfx, pen, activePen, fillBrush, gridSize);
+
             Point from = new Point(OutputPositions[0].X * gridSize - gridSize / 2, OutputPositions[0].Y * gridSize);
             Point to = new Point(from.X - gridSize / 2, from.Y - gridSize / 3);
 
@@ -20,8 +22,6 @@ namespace CourseProject
                 gfx.DrawLine(activePen, from, to);
             else
                 gfx.DrawLine(pen, from, to);
-
-            base.Draw(gfx, pen, activePen, fillBrush, gridSize);
 
             Font font = new Font("Arial", (float)(gridSize * 0.6));
             var brush = new SolidBrush(pen.Color);
