@@ -13,6 +13,7 @@ namespace CourseProject
 
 
         private bool output;
+
         public override bool[] Outputs
         {
             get
@@ -29,9 +30,13 @@ namespace CourseProject
 
 
         public enum Direction { Undefined, Up, Down, Left, Right};
+
         public Direction WireDirection { get; set; }
 
+        public int OutputCounter { get; private set; }
+
         private int length;
+
         public int Length {
             get { return length; }
             set
@@ -130,13 +135,9 @@ namespace CourseProject
         public Wire()
         {
             Inputs = new Connection[1];
-            //ValueChanged = false;
+            OutputCounter = 0;
         }
 
-        public Wire(Connection input)
-        {
-            Inputs = new Connection[] { input };
-        }
 
         public void SetInput(Connection input)
         {
@@ -213,5 +214,7 @@ namespace CourseProject
 
             return rect;
         }
+
+        public void AddOutput() { OutputCounter++; }
     }
 }

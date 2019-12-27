@@ -31,8 +31,8 @@ namespace CourseProject
 
         private void CircuitDesignerForm_Load(object sender, EventArgs e)
         {
-            typeof(Panel).InvokeMember("DoubleBuffered", 
-                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, 
+            typeof(Panel).InvokeMember("DoubleBuffered",
+                BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
                 null, canvas, new object[] { true });
 
             circuit = new Circuit(6, 1);
@@ -60,6 +60,42 @@ namespace CourseProject
 
         private Element createdElement;
 
+        private bool PointInWire(Point point, Wire wire)
+        {
+            switch (wire.WireDirection)
+            {
+                case Wire.Direction.Up:
+                    {
+                        if (point.X != wire.Position.X)
+                            return false;
+
+                        return point.Y > wire.OutputPositions[0].Y && point.Y < wire.Position.Y;
+                    }
+                case Wire.Direction.Down:
+                    {
+                        if (point.X != wire.Position.X)
+                            return false;
+
+                        return point.Y > wire.Position.Y && point.Y < wire.OutputPositions[0].Y;
+                    }
+                case Wire.Direction.Left:
+                    {
+                        if (point.Y != wire.Position.Y)
+                            return false;
+
+                        return point.X > wire.OutputPositions[0].X && point.X < wire.Position.X;
+                    }
+                case Wire.Direction.Right:
+                    {
+                        if (point.Y != wire.Position.Y)
+                            return false;
+
+                        return point.X > wire.Position.X && point.X < wire.OutputPositions[0].X;
+                    }
+                default:
+                    return false;
+            }
+        }
 
         private void CreateNewWire()
         {
@@ -68,6 +104,9 @@ namespace CourseProject
             foreach (var element in circuit.AllElements)
             {
                 if (element.InputPositions.Contains(gridPointerPosition) && !(element is Wire))
+                    return;
+
+                if ((element is Wire) && PointInWire(gridPointerPosition, element as Wire))
                     return;
 
                 if (element.OutputPositions.Contains(gridPointerPosition))
@@ -162,7 +201,7 @@ namespace CourseProject
         {
             SetPointerPosition(e.Location);
 
-            if(selectedTool == Tools.Wire && createdWire != null)
+            if (selectedTool == Tools.Wire && createdWire != null)
             {
                 if (createdWire.WireDirection == Wire.Direction.Undefined)
                 {
@@ -179,7 +218,35 @@ namespace CourseProject
             if (createdWire == null)
                 return;
 
+            // check if wire intersects with any elements
             if (circuit.AllElements.Any(x => x.Rect.IntersectsWith(createdWire.Rect) && !(x is Wire)))
+            {
+                canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
+                createdWire = null;
+                return;
+            }
+
+            // check if wire output tries to connect to other element's output
+            if (circuit.AllElements.Any(x => x.OutputPositions.Contains(createdWire.OutputPositions[0])))
+            {
+                canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
+                createdWire = null;
+                return;
+            }
+
+            // prevent putting wire outputs inside other wires
+            if (circuit.Wires.Any(x => PointInWire(createdWire.OutputPositions[0], x)))
+            {
+                canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
+                createdWire = null;
+                return;
+            }
+
+            // prevent creating wires that lay over other elements' ports
+            if (circuit.AllElements.
+                Any(x => 
+                    x.OutputPositions.Any(xOut => PointInWire(xOut, createdWire)) ||
+                    x.InputPositions.Any(xIn => PointInWire(xIn, createdWire))))
             {
                 canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
                 createdWire = null;
@@ -191,21 +258,61 @@ namespace CourseProject
             {
                 for (int i = 0; i < element.InputPositions.Length; i++)
                 {
-                    if (gridPointerPosition == element.InputPositions[i])
-                    {
+                    if (createdWire.OutputPositions[0] == element.InputPositions[i])
                         element.SetInput(i, new Connection(createdWire));
-                        canvas.Refresh();
-                    }
                 }
             }
 
-            circuit.AddElement(createdWire);
+            Wire adjacentInput = null;
+            Wire adjacentOutput = null;
 
-            createdWire = null;
+            //merge wires if needed
+            foreach (var wire in circuit.Wires)
+            {
+                if (createdWire.WireDirection == wire.WireDirection)
+                {
+                    if (createdWire.Position == wire.OutputPositions[0] && wire.OutputCounter == 1)
+                        adjacentInput = wire;
+
+                    if (createdWire.OutputPositions[0] == wire.Position)
+                        adjacentOutput = wire;
+
+                    if (adjacentInput != null && adjacentOutput != null)
+                        break;
+                }
+            }
+
+            if (adjacentInput != null)
+            {
+                createdWire.SetInput(adjacentInput.Inputs[0]);
+                createdWire.Position = adjacentInput.Position;
+                createdWire.Length += adjacentInput.Length;
+
+                circuit.RemoveElement(adjacentInput);
+            }
+
+            if (adjacentOutput != null)
+            {
+                adjacentOutput.SetInput(createdWire.Inputs[0]);
+                adjacentOutput.Position = createdWire.Position;
+                adjacentOutput.Length += createdWire.Length;
+
+                createdWire = null;
+            }
+
+            if (createdWire != null && createdWire.Length > 0)
+            {
+                circuit.AddElement(createdWire);
+                createdWire = null;
+            }
+
+            canvas.Refresh();
         }
 
         private void Canvas_MouseUp(object sender, MouseEventArgs e)
         {
+            SetPointerPosition(e.Location);
+
             if(selectedTool == Tools.Wire)
             {
                 AddCreatedWireToCircuit();

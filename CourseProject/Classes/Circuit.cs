@@ -82,6 +82,10 @@ namespace CourseProject
             elements.Add(element);
         }
 
+        public void RemoveElement(Element element)
+        {
+            elements.Remove(element);
+        }
 
         public void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
         {

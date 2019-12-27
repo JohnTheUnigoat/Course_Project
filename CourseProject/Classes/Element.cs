@@ -34,6 +34,9 @@ namespace CourseProject
             if (sourceOutputIndex >= source.Outputs.Length)
                 throw new IndexOutOfRangeException();
 
+            if (source != null && source is Wire)
+                (source as Wire).AddOutput();
+
             Source = source;
             SourceOutputIndex = sourceOutputIndex;
         }
