@@ -84,12 +84,6 @@ namespace CourseProject
 
         public void RemoveElement(Element element)
         {
-            foreach(var conn in element.Inputs)
-            {
-                if (conn.Source is Wire)
-                    (conn.Source as Wire).RemoveOutput();
-            }
-
             elements.Remove(element);
         }
 

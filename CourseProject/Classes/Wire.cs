@@ -33,7 +33,13 @@ namespace CourseProject
 
         public Direction WireDirection { get; set; }
 
-        public int OutputCounter { get; private set; }
+        public int OutputCounter
+        {
+            get
+            {
+                return connectedToOutputs.Count;
+            }
+        }
 
         private int length;
 
@@ -106,20 +112,20 @@ namespace CourseProject
                 switch (WireDirection)
                 {
                     case Direction.Up:
-                        position = new Point(Position.X, Position.Y - Length);
-                        size = new Size(0, Length);
+                        position = new Point(Position.X - 1, Position.Y - Length);
+                        size = new Size(2, Length);
                         break;
                     case Direction.Down:
-                        position = Position;
-                        size = new Size(0, Length);
+                        position = new Point(Position.X - 1, Position.Y);
+                        size = new Size(2, Length);
                         break;
                     case Direction.Left:
-                        position = new Point(Position.X - Length, Position.Y);
-                        size = new Size(Length, 0);
+                        position = new Point(Position.X - Length, Position.Y - 1);
+                        size = new Size(Length, 2);
                         break;
                     case Direction.Right:
-                        position = Position;
-                        size = new Size(Length, 0);
+                        position = new Point(Position.X, Position.Y - 1);
+                        size = new Size(Length, 2);
                         break;
                     default:
                         position = Position;
@@ -135,7 +141,6 @@ namespace CourseProject
         public Wire()
         {
             Inputs = new Connection[1];
-            OutputCounter = 0;
         }
 
 
@@ -184,8 +189,6 @@ namespace CourseProject
                     arrow[1] = new Point(arrow[0].X - arrowLength, arrow[0].Y - arrowWidth);
                     arrow[2] = new Point(arrow[0].X - arrowLength, arrow[0].Y + arrowWidth);
                     break;
-                default:
-                    break;
             }
 
             int nodeRadius = gridSize / 5;
@@ -231,9 +234,5 @@ namespace CourseProject
 
             return rect;
         }
-
-        public void AddOutput() { OutputCounter++; }
-
-        public void RemoveOutput() { OutputCounter--; }
     }
 }

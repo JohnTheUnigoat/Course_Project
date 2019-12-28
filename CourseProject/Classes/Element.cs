@@ -34,9 +34,6 @@ namespace CourseProject
             if (sourceOutputIndex >= source.Outputs.Length)
                 throw new IndexOutOfRangeException();
 
-            if (source != null && source is Wire)
-                (source as Wire).AddOutput();
-
             Source = source;
             SourceOutputIndex = sourceOutputIndex;
         }
@@ -58,12 +55,43 @@ namespace CourseProject
 
         abstract public Point[] OutputPositions { get; }
 
-        private List<Element> connectedToOutputs = new List<Element>();
+        protected List<Element> connectedToOutputs = new List<Element>();
 
 
         private void AddOutputElement(Element element)
         {
             connectedToOutputs.Add(element);
+        }
+
+        public void RemoveOutputElement(Element element)
+        {
+            connectedToOutputs.Remove(element);
+        }
+
+        public void Disconnect()
+        {
+            for (int i = 0; i < Inputs.Length; i++)
+            {
+                if (Inputs[i].Source == null)
+                    continue;
+
+                Inputs[i].Source.RemoveOutputElement(this);
+                Inputs[i].Source = null;
+            }
+
+            foreach (var element in connectedToOutputs)
+            {
+                for (int i = 0; i < element.Inputs.Length; i++)
+                {
+                    if (element.Inputs[i].Source == this)
+                    {
+                        element.Inputs[i].Source = null;
+                        break;
+                    }
+                }
+            }
+
+            connectedToOutputs.Clear();
         }
 
         public void SetInput(int inputIndex, Connection input)
