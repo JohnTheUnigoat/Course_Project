@@ -84,6 +84,8 @@ namespace CourseProject
 
         public void RemoveElement(Element element)
         {
+            element.Disconnect();
+
             elements.Remove(element);
         }
 

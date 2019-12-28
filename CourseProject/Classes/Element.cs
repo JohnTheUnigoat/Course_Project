@@ -47,6 +47,8 @@ namespace CourseProject
 
         public bool IsTraced { protected get; set; }
 
+        public bool IsSelected { get; set; }
+
         public Point Position { get; set; }
 
         abstract public Rectangle Rect { get; }
@@ -104,6 +106,9 @@ namespace CourseProject
 
         virtual public void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
         {
+            if(IsSelected)
+                pen = activePen;
+
             for(int i = 0; i < InputPositions.Length; i++)
             {
                 Point from = new Point(InputPositions[i].X * gridSize, InputPositions[i].Y * gridSize);

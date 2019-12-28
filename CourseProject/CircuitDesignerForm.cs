@@ -65,13 +65,19 @@ namespace CourseProject
 
 
         private Wire createdWire;
+
         private Element createdWireInput;
 
         private Element createdElement;
 
+
         private Element movingElement;
 
         private Point positionDisplacement;
+
+    
+        private Element selectedElement;
+
 
         private bool PointInWire(Point point, Wire wire)
         {
@@ -138,6 +144,7 @@ namespace CourseProject
             createdWire.Position = gridPointerPosition;
         }
 
+        // TODO proper element selection (pen = activePen is great and all, but for real.)
         private void Canvas_MouseDown(object sender, MouseEventArgs e)
         {
             SetPointerPosition(e.Location);
@@ -153,16 +160,21 @@ namespace CourseProject
                             movingElement.Disconnect();
                             positionDisplacement.X = element.Position.X - gridPointerPosition.X;
                             positionDisplacement.Y = element.Position.Y - gridPointerPosition.Y;
+
+                            selectedElement = element;
+                            selectedElement.IsSelected = true;
+
                             break;
                         }
                     }
+
+                    canvas.Refresh();
                     break;
                 case Tools.AddElement:
                     break;
                 case Tools.Wire:
                     if (createdWire == null)
                         CreateNewWire();
-
                     break;
             }
         }
@@ -605,6 +617,20 @@ namespace CourseProject
 
             canvas.Refresh();
 
+        }
+
+        private void CircuitDesignerForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (selectedElement == null)
+                return;
+
+            if (e.KeyCode == Keys.Delete)
+            {
+                MessageBox.Show("asdf");
+                circuit.RemoveElement(selectedElement);
+            }
+
+            canvas.Refresh();
         }
     }
 }

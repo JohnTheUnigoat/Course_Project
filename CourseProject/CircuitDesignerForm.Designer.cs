@@ -258,9 +258,11 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.canvas);
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.KeyPreview = true;
             this.Name = "CircuitDesignerForm";
             this.Text = "Circuit Designer";
             this.Load += new System.EventHandler(this.CircuitDesignerForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CircuitDesignerForm_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.numInputs)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
