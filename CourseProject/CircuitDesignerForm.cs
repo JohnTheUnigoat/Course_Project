@@ -407,6 +407,38 @@ namespace CourseProject
             canvas.Refresh();
         }
 
+        // Needs to be reimplemented, by removing element from cirquit entirely while you move it.
+        // Let the circuit handle the connecting/disconnecting.
+        private void ConnectElement(Element connectingElement)
+        {
+            for (int i = 0; i < connectingElement.InputPositions.Length; i++)
+            {
+                var inputPos = connectingElement.InputPositions[i];
+                foreach (var element in circuit.AllElements)
+                {
+                    for (int j = 0; j < element.OutputPositions.Length; j++)
+                    {
+                        var outputPos = element.OutputPositions[j];
+                        if (inputPos == outputPos)
+                            connectingElement.SetInput(i, new Connection(element));
+                    }
+                }
+            }
+
+            foreach (var outputPos in connectingElement.OutputPositions)
+            {
+                foreach (var element in circuit.AllElements)
+                {
+                    for (int i = 0; i < element.InputPositions.Length; i++)
+                    {
+                        var inputPos = element.InputPositions[i];
+                        if (inputPos == outputPos)
+                            element.SetInput(i, new Connection(connectingElement));
+                    }
+                }
+            }
+        }
+
         private void Canvas_MouseUp(object sender, MouseEventArgs e)
         {
             SetPointerPosition(e.Location);
@@ -417,32 +449,7 @@ namespace CourseProject
                     if (movingElement == null)
                         return;
 
-                    for (int i = 0; i < movingElement.InputPositions.Length; i++)
-                    {
-                        var inputPos = movingElement.InputPositions[i];
-                        foreach (var element in circuit.AllElements)
-                        {
-                            for (int j = 0; j < element.OutputPositions.Length; j++)
-                            {
-                                var outputPos = element.OutputPositions[j];
-                                if (inputPos == outputPos)
-                                    movingElement.SetInput(i, new Connection(element));
-                            }
-                        }
-                    }
-
-                    foreach (var outputPos in movingElement.OutputPositions)
-                    {
-                        foreach (var element in circuit.AllElements)
-                        {
-                            for (int i = 0; i < element.InputPositions.Length; i++)
-                            {
-                                var inputPos = element.InputPositions[i];
-                                if (inputPos == outputPos)
-                                    element.SetInput(i, new Connection(movingElement));
-                            }
-                        }
-                    }
+                    ConnectElement(movingElement);
 
                     canvas.Refresh();
                     positionDisplacement = new Point(0, 0);
@@ -475,7 +482,11 @@ namespace CourseProject
                         default:
                             break;
                     }
+
                     createdElement.Position = gridPointerPosition;
+
+                    ConnectElement(createdElement);
+
                     circuit.AddElement(createdElement);
 
                     Rectangle rect = createdElement.GetInvalidateRect(gridSize);
