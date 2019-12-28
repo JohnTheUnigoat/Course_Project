@@ -88,7 +88,7 @@ namespace CourseProject
             var format = new StringFormat();
             format.Alignment = StringAlignment.Center;
 
-            gfx.DrawString(displayValue, font, Brushes.Wheat, rect, format);
+            gfx.DrawString(displayValue, font, brush, rect, format);
         }
     }
 }

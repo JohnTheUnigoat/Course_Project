@@ -56,7 +56,7 @@ namespace CourseProject
             if (createdWire != null)
                 createdWire.Draw(gfx, Pens.Wheat, Pens.GreenYellow, gridSize);
 
-            circuit.Draw(gfx, Pens.Wheat, Pens.GreenYellow, new SolidBrush(canvas.BackColor), gridSize);
+            circuit.Draw(gfx, Pens.Gray, Pens.White, Pens.GreenYellow, new SolidBrush(canvas.BackColor), gridSize);
 
             Point pos = new Point(gridPointerPosition.X * gridSize - 4, gridPointerPosition.Y * gridSize - 4);
             Size size = new Size(8, 8);
@@ -152,6 +152,8 @@ namespace CourseProject
             switch (selectedTool)
             {
                 case Tools.Edit:
+                    bool elementClick = false;
+
                     foreach (var element in circuit.AllElements)
                     {
                         if (element.Rect.Contains(gridPointerPosition))
@@ -160,11 +162,6 @@ namespace CourseProject
                             movingElement.Disconnect();
                             positionDisplacement.X = element.Position.X - gridPointerPosition.X;
                             positionDisplacement.Y = element.Position.Y - gridPointerPosition.Y;
-
-                            selectedElement = element;
-                            selectedElement.IsSelected = true;
-
-                            break;
                         }
                     }
 
@@ -458,8 +455,33 @@ namespace CourseProject
             switch (selectedTool)
             {
                 case Tools.Edit:
+                    bool elementClick = false;
+
+                    foreach (var element in circuit.Elements)
+                    {
+                        if (element.Rect.Contains(gridPointerPosition))
+                        {
+                            if (selectedElement != null)
+                                selectedElement.IsSelected = false;
+
+                            selectedElement = element;
+                            selectedElement.IsSelected = true;
+                            elementClick = true;
+                            break;
+                        }
+                    }
+
+                    if (!elementClick && selectedElement != null)
+                    {
+                        selectedElement.IsSelected = false;
+                        selectedElement = null;
+                    }
+
                     if (movingElement == null)
                         return;
+
+                    if (selectedElement == null)
+                        movingElement.IsSelected = false;
 
                     ConnectElement(movingElement);
 
@@ -611,6 +633,11 @@ namespace CourseProject
             {
                 if (element is CircuitInput)
                 {
+                    if (selectedElement != null)
+                    {
+                        selectedElement.IsSelected = false;
+                        selectedElement = null;
+                    }
                     (element as CircuitInput).Toggle();
                 }
             }
@@ -625,10 +652,7 @@ namespace CourseProject
                 return;
 
             if (e.KeyCode == Keys.Delete)
-            {
-                MessageBox.Show("asdf");
                 circuit.RemoveElement(selectedElement);
-            }
 
             canvas.Refresh();
         }

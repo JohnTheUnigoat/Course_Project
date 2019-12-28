@@ -75,9 +75,6 @@ namespace CourseProject
         {
             base.Draw(gfx, pen, activePen, gridSize);
 
-            if (IsSelected)
-                pen = activePen;
-
             Size size = new Size(gridSize * 2, gridSize * (Inputs.Length + 1));
             Point position = new Point(Position.X * gridSize, Position.Y * gridSize);
 

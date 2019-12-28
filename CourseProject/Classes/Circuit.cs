@@ -89,13 +89,16 @@ namespace CourseProject
             elements.Remove(element);
         }
 
-        public void Draw(Graphics gfx, Pen pen, Pen activePen, Brush fillBrush, int gridSize)
+        public void Draw(Graphics gfx, Pen defaultPen, Pen selectedPen, Pen activePen, Brush fillBrush, int gridSize)
         {
             Retrace();
 
             foreach (var element in AllElements)
             {
-                element.Draw(gfx, pen, activePen, gridSize);
+                if(element.IsSelected)
+                    element.Draw(gfx, selectedPen, activePen, gridSize);
+                else
+                    element.Draw(gfx, defaultPen, activePen, gridSize);
             }
         }
 

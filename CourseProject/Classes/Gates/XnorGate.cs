@@ -34,7 +34,7 @@ namespace CourseProject
 
             Rectangle rect = new Rectangle(position, size);
 
-            gfx.DrawString("=1", font, Brushes.Wheat, rect, format);
+            gfx.DrawString("=1", font, brush, rect, format);
         }
 
         protected override void CalculateOutput()
