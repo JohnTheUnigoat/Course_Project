@@ -109,8 +109,13 @@ namespace CourseProject
 
 		public void AddElement(Element element)
 		{
-			if(!(element is Wire))
+			if (!(element is Wire))
+			{
+				if (AllElements.Any(x => x.Rect.IntersectsWith(element.Rect)))
+					return;
+
 				ConnectElement(element);
+			}
 
 			if (element is CircuitInput)
 			{
@@ -130,6 +135,18 @@ namespace CourseProject
 		public void RemoveElement(Element element)
 		{
 			element.Disconnect();
+
+			if (element is CircuitInput)
+			{
+				inputs.Remove(element as CircuitInput);
+				return;
+			}
+
+			if (element is CircuitOutput)
+			{
+				outputs.Remove(element as CircuitOutput);
+				return;
+			}
 
 			elements.Remove(element);
 		}

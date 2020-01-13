@@ -65,7 +65,7 @@ namespace CourseProject
 
 			Point pos = new Point(gridPointerPosition.X * gridSize - 4, gridPointerPosition.Y * gridSize - 4);
 			Size size = new Size(8, 8);
-			gfx.DrawRectangle(Pens.Red, new Rectangle(pos, size));
+			//gfx.DrawRectangle(Pens.Red, new Rectangle(pos, size));
 		}
 
 
@@ -76,12 +76,28 @@ namespace CourseProject
 		private Element createdElement;
 
 
+	
+		private Element _selectedElement;
+		private Element selectedElement
+		{
+			get { return _selectedElement; }
+			set
+			{
+				if (_selectedElement != null)
+					_selectedElement.IsSelected = false;
+
+				_selectedElement = value;
+
+				if (_selectedElement != null)
+					_selectedElement.IsSelected = true;
+			}
+		}
+
+		private Element mouseDownElement;
+		private Element mouseUpElement;
 		private Element movingElement;
 
 		private Point positionDisplacement;
-
-	
-		private Element selectedElement;
 
 		private bool PointInWire(Point point, Wire wire)
 		{
@@ -148,6 +164,7 @@ namespace CourseProject
 			createdWire.Position = gridPointerPosition;
 		}
 
+		Point startDragGridPos;
 
 		private void Canvas_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -158,12 +175,14 @@ namespace CourseProject
 				case Tools.Edit:
 					foreach (var element in circuit.AllElements)
 					{
-						if (element.Rect.Contains(gridPointerPosition))
+						if (element.GetInvalidateRect(gridSize).Contains(e.Location))
 						{
-							movingElement = element;
-							circuit.RemoveElement(movingElement);
+							mouseDownElement = element;
+
+							startDragGridPos = gridPointerPosition;
 							positionDisplacement.X = element.Position.X - gridPointerPosition.X;
 							positionDisplacement.Y = element.Position.Y - gridPointerPosition.Y;
+							break;
 						}
 					}
 
@@ -247,9 +266,13 @@ namespace CourseProject
 			switch (selectedTool)
 			{
 				case Tools.Edit:
+					if(movingElement == null && mouseDownElement != null)
+						movingElement = mouseDownElement;
+
 					if (movingElement != null)
 					{
-						//circuit.RemoveElement(movingElement);
+						if (gridPointerPosition != startDragGridPos)
+							circuit.RemoveElement(movingElement);
 
 						Point newPosition = new Point(
 							gridPointerPosition.X + positionDisplacement.X,
@@ -258,8 +281,6 @@ namespace CourseProject
 						movingElement.Position = newPosition;
 						canvas.Refresh();
 					}
-					break;
-				case Tools.AddElement:
 					break;
 				case Tools.Wire:
 					if (createdWire != null)
@@ -422,38 +443,34 @@ namespace CourseProject
 			{
 				case Tools.Edit:
 					{
-						if (movingElement != null)
-							circuit.AddElement(movingElement);
-
-						bool elementClick = false;
-
-						// check if clicked element
-						foreach (var element in circuit.Elements)
+						foreach(var element in circuit.AllElements)
 						{
-							if (element.Rect.Contains(gridPointerPosition))
+							if (element.GetInvalidateRect(gridSize).Contains(e.Location))
 							{
-								if (selectedElement != null)
-									selectedElement.IsSelected = false;
-
-								selectedElement = element;
-
-								selectedElement.IsSelected = true;
-
-								elementClick = true;
+								mouseUpElement = element;
 								break;
 							}
 						}
 
-						// remove selection if necessary
-						if (!elementClick && selectedElement != null)
+						if (movingElement != null)
 						{
-							selectedElement.IsSelected = false;
-							selectedElement = null;
+							circuit.AddElement(movingElement);
+						}
+						else if (mouseUpElement == mouseDownElement)
+						{
+							if (mouseUpElement != null)
+								selectedElement = mouseUpElement;
+							else
+								selectedElement = null;
 						}
 
 						canvas.Refresh();
 						positionDisplacement = new Point(0, 0);
+
+						mouseDownElement = null;
 						movingElement = null;
+						mouseUpElement = null;
+
 						break;
 					}
 				case Tools.AddElement:
@@ -624,7 +641,7 @@ namespace CourseProject
 			{
 				circuit.RemoveElement(selectedElement);
 				movingElement = null;
-				//selectedElement = null;
+				selectedElement = null;
 			}
 
 			canvas.Refresh();
