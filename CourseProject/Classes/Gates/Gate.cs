@@ -64,7 +64,6 @@ namespace CourseProject
 			}
 		}
 
-
 		public Gate(int numberOfInputs)
 		{
 			Inputs = new Connection[numberOfInputs];
@@ -83,7 +82,6 @@ namespace CourseProject
 			gfx.DrawRectangle(pen, rect);
 		}
 
-		//Sets the output field, returns true if output value changed
 		abstract protected void CalculateOutput();
 	}
 }

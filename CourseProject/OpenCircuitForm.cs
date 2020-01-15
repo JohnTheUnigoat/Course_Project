@@ -25,7 +25,6 @@ namespace CourseProject
 			NumberOfInputs = (int)numInputs.Value;
 			NumberOfOutputs = (int)numOutputs.Value;
 
-
 			DialogResult = DialogResult.OK;
 			Close();
 		}

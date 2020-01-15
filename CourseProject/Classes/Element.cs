@@ -41,9 +41,9 @@ namespace CourseProject
 
 	abstract public class Element
 	{
-		abstract public Connection[] Inputs { get; }
+		public abstract Connection[] Inputs { get; }
 
-		abstract public bool[] Outputs { get; }
+		public abstract bool[] Outputs { get; }
 
 		public bool IsTraced { protected get; set; }
 
@@ -51,11 +51,11 @@ namespace CourseProject
 
 		public Point Position { get; set; }
 
-		abstract public Rectangle Rect { get; }
+		public abstract Rectangle Rect { get; }
 
-		abstract public Point[] InputPositions { get; }
+		public abstract Point[] InputPositions { get; }
 
-		abstract public Point[] OutputPositions { get; }
+		public abstract Point[] OutputPositions { get; }
 
 		protected List<Element> elementsOnOutputs = new List<Element>();
 
@@ -104,7 +104,7 @@ namespace CourseProject
 				input.Source.AddOutputElement(this);
 		}
 
-		virtual public void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
+		public virtual void Draw(Graphics gfx, Pen pen, Pen activePen, int gridSize)
 		{
 			for(int i = 0; i < InputPositions.Length; i++)
 			{
@@ -129,7 +129,7 @@ namespace CourseProject
 			}
 		}
 
-		virtual public Rectangle GetInvalidateRect(int gridSize)
+		public virtual Rectangle GetInvalidateRect(int gridSize)
 		{
 			Rectangle invalidateRect = new Rectangle(
 				Rect.X * gridSize - 1, Rect.Y * gridSize - 1,
