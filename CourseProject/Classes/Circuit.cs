@@ -192,12 +192,12 @@ namespace CourseProject
 			elements.Add(firstHalf);
 		}
 
-		public void AddElement(Element element)
+		public bool AddElement(Element element)
 		{
 			if (!(element is Wire))
 			{
 				if (AllElements.Any(x => x.Rect.IntersectsWith(element.Rect)))
-					return;
+					return false;
 
 				ConnectElement(element);
 			}
@@ -206,10 +206,10 @@ namespace CourseProject
 				Wire createdWire = element as Wire;
 
 				if (createdWire.Length == 0)
-					return;
+					return false;
 
 				if (WirePlacementConflict(createdWire))
-					return;
+					return false;
 
 				Wire adjacentInput = null;
 				Wire adjacentOutput = null;
@@ -255,16 +255,17 @@ namespace CourseProject
 			if (element is CircuitInput)
 			{
 				inputs.Add(element as CircuitInput);
-				return;
+				return true;
 			}
 
 			if (element is CircuitOutput)
 			{
 				outputs.Add(element as CircuitOutput);
-				return;
+				return true;
 			}
 
 			elements.Add(element);
+			return true;
 		}
 
 		public void RemoveElement(Element element)

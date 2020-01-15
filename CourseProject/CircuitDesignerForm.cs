@@ -94,6 +94,8 @@ namespace CourseProject
 		private Element mouseDownElement;
 		private Element mouseUpElement;
 
+		private Point previousElementPosition;
+
 		private Element movingElement;
 
 		private Point positionDisplacement;
@@ -222,7 +224,10 @@ namespace CourseProject
 			{
 				case Tools.Edit:
 					if (movingElement == null && mouseDownElement != null && !(mouseDownElement is Wire))
+					{
+						previousElementPosition = mouseDownElement.Position;
 						movingElement = mouseDownElement;
+					}
 
 					if (movingElement != null)
 					{
@@ -272,7 +277,11 @@ namespace CourseProject
 
 						if (movingElement != null)
 						{
-							circuit.AddElement(movingElement);
+							if(!circuit.AddElement(movingElement))
+							{
+								movingElement.Position = previousElementPosition;
+								circuit.AddElement(movingElement);
+							}
 						}
 						else if (mouseUpElement == mouseDownElement)
 						{
