@@ -107,6 +107,91 @@ namespace CourseProject
 			}
 		}
 
+		private static bool PointInWire(Point point, Wire wire)
+		{
+			switch (wire.WireDirection)
+			{
+				case Wire.Direction.Up:
+					{
+						if (point.X != wire.Position.X)
+							return false;
+
+						return point.Y > wire.OutputPositions[0].Y && point.Y < wire.Position.Y;
+					}
+				case Wire.Direction.Down:
+					{
+						if (point.X != wire.Position.X)
+							return false;
+
+						return point.Y > wire.Position.Y && point.Y < wire.OutputPositions[0].Y;
+					}
+				case Wire.Direction.Left:
+					{
+						if (point.Y != wire.Position.Y)
+							return false;
+
+						return point.X > wire.OutputPositions[0].X && point.X < wire.Position.X;
+					}
+				case Wire.Direction.Right:
+					{
+						if (point.Y != wire.Position.Y)
+							return false;
+
+						return point.X > wire.Position.X && point.X < wire.OutputPositions[0].X;
+					}
+				default:
+					return false;
+			}
+		}
+
+		private bool WirePlacementConflict(Wire wire)
+		{
+			foreach (var element in AllElements)
+			{
+				// check if wire intersects with non-wire element
+				if (!(element is Wire) && element.Rect.IntersectsWith(wire.Rect))
+					return true;
+
+				// check is wire output is in other element's output
+				if (element.OutputPositions.Contains(wire.OutputPositions[0]))
+					return true;
+
+				// check if wire output inside another wire
+				if (element is Wire && PointInWire(wire.OutputPositions[0], element as Wire))
+					return true;
+
+				// check if wire covers any ports on the element
+				if (element.OutputPositions.Concat(element.InputPositions).
+					Any(pos => PointInWire(pos, wire)))
+					return true;
+			}
+
+			return false;
+		}
+
+		public void SplitWire(Wire wireToSplit, Point splitPoint)
+		{
+			Wire firstHalf = new Wire();
+
+			firstHalf.Position = wireToSplit.Position;
+			firstHalf.WireDirection = wireToSplit.WireDirection;
+			firstHalf.Length =
+				Math.Abs(wireToSplit.Position.X - splitPoint.X) +
+				Math.Abs(wireToSplit.Position.Y - splitPoint.Y);
+
+			if(wireToSplit.Inputs[0].Source != null)
+				wireToSplit.Inputs[0].Source.RemoveOutputElement(wireToSplit);
+
+			firstHalf.SetInput(wireToSplit.Inputs[0]);
+
+			wireToSplit.Position = splitPoint;
+			wireToSplit.Length -= firstHalf.Length;
+
+			wireToSplit.SetInput(new Connection(firstHalf));
+
+			elements.Add(firstHalf);
+		}
+
 		public void AddElement(Element element)
 		{
 			if (!(element is Wire))
@@ -115,6 +200,56 @@ namespace CourseProject
 					return;
 
 				ConnectElement(element);
+			}
+			else
+			{
+				Wire createdWire = element as Wire;
+
+				if (createdWire.Length == 0)
+					return;
+
+				if (WirePlacementConflict(createdWire))
+					return;
+
+				Wire adjacentInput = null;
+				Wire adjacentOutput = null;
+
+				foreach (var wire in Wires)
+				{
+					if (PointInWire(createdWire.Position, wire))
+					{
+						SplitWire(wire, createdWire.Position);
+						break;
+					}
+
+					if (createdWire.WireDirection == wire.WireDirection)
+					{
+						if (createdWire.Position == wire.OutputPositions[0] && wire.OutputCounter == 0)
+							adjacentInput = wire;
+
+						if (createdWire.OutputPositions[0] == wire.Position)
+							adjacentOutput = wire;
+
+						if (adjacentInput != null && adjacentOutput != null)
+							break;
+					}
+				}
+
+				if (adjacentInput != null)
+				{
+					createdWire.Position = adjacentInput.Position;
+					createdWire.Length += adjacentInput.Length;
+
+					RemoveElement(adjacentInput);
+				}
+
+				if (adjacentOutput != null && Wires.Where(w => w.Position == createdWire.OutputPositions[0]).Count() == 1)
+				{
+					createdWire.Length += adjacentOutput.Length;
+					RemoveElement(adjacentOutput);
+				}
+
+				ConnectElement(createdWire);
 			}
 
 			if (element is CircuitInput)

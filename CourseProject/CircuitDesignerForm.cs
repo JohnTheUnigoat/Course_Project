@@ -65,17 +65,11 @@ namespace CourseProject
 
 			Point pos = new Point(gridPointerPosition.X * gridSize - 4, gridPointerPosition.Y * gridSize - 4);
 			Size size = new Size(8, 8);
-			//gfx.DrawRectangle(Pens.Red, new Rectangle(pos, size));
 		}
 
 
 		private Wire createdWire;
-
-		private Element createdWireInput;
-
 		private Element createdElement;
-
-
 	
 		private Element _selectedElement;
 		private Element selectedElement
@@ -95,68 +89,24 @@ namespace CourseProject
 
 		private Element mouseDownElement;
 		private Element mouseUpElement;
+
 		private Element movingElement;
 
 		private Point positionDisplacement;
 
-		private bool PointInWire(Point point, Wire wire)
-		{
-			switch (wire.WireDirection)
-			{
-				case Wire.Direction.Up:
-					{
-						if (point.X != wire.Position.X)
-							return false;
-
-						return point.Y > wire.OutputPositions[0].Y && point.Y < wire.Position.Y;
-					}
-				case Wire.Direction.Down:
-					{
-						if (point.X != wire.Position.X)
-							return false;
-
-						return point.Y > wire.Position.Y && point.Y < wire.OutputPositions[0].Y;
-					}
-				case Wire.Direction.Left:
-					{
-						if (point.Y != wire.Position.Y)
-							return false;
-
-						return point.X > wire.OutputPositions[0].X && point.X < wire.Position.X;
-					}
-				case Wire.Direction.Right:
-					{
-						if (point.Y != wire.Position.Y)
-							return false;
-
-						return point.X > wire.Position.X && point.X < wire.OutputPositions[0].X;
-					}
-				default:
-					return false;
-			}
-		}
-
 		private void CreateNewWire()
 		{
-			createdWireInput = null;
-
 			bool isOnInput = false;
 
 			foreach (var element in circuit.AllElements)
 			{
-				if (element.InputPositions.Contains(gridPointerPosition))
+				if (!(element is Wire) && element.InputPositions.Contains(gridPointerPosition))
 				{
 					isOnInput = true;
 				}
-
-				if (element.OutputPositions.Contains(gridPointerPosition))
-				{
-					createdWireInput = element;
-					break;
-				}
 			}
 
-			if (isOnInput && createdWireInput == null)
+			if (isOnInput)
 				return;
 
 			createdWire = new Wire();
@@ -191,6 +141,7 @@ namespace CourseProject
 				case Tools.Wire:
 					if (createdWire == null)
 						CreateNewWire();
+
 					break;
 			}
 		}
@@ -266,7 +217,7 @@ namespace CourseProject
 			switch (selectedTool)
 			{
 				case Tools.Edit:
-					if(movingElement == null && mouseDownElement != null)
+					if (movingElement == null && mouseDownElement != null && !(mouseDownElement is Wire))
 						movingElement = mouseDownElement;
 
 					if (movingElement != null)
@@ -295,143 +246,6 @@ namespace CourseProject
 					break;
 			}
 
-			canvas.Refresh();
-		}
-
-
-		private void AddCreatedWireToCircuit()
-		{
-			if (createdWire == null)
-				return;
-
-			// check if wire intersects with any elements
-			if (circuit.AllElements.Any(x =>
-			{
-				if(x.Rect.IntersectsWith(createdWire.Rect) && !(x is Wire))
-					return true;
-
-				return false;
-			}))
-			{
-				canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
-				createdWire = null;
-				return;
-			}
-
-			// check if wire output tries to connect to other element's output
-			if (circuit.AllElements.Any(x => x.OutputPositions.Contains(createdWire.OutputPositions[0])))
-			{
-				canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
-				createdWire = null;
-				return;
-			}
-
-			// prevent putting wire outputs inside other wires
-			if (circuit.Wires.Any(x => PointInWire(createdWire.OutputPositions[0], x)))
-			{
-				canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
-				createdWire = null;
-				return;
-			}
-
-			// prevent creating wires that lay over other elements' ports
-			if (circuit.AllElements.
-				Any(x => 
-					x.OutputPositions.Any(xOut => PointInWire(xOut, createdWire)) ||
-					x.InputPositions.Any(xIn => PointInWire(xIn, createdWire))))
-			{
-				canvas.Invalidate(createdWire.GetInvalidateRect(gridSize));
-				createdWire = null;
-				return;
-			}
-
-			// check if wire output corresponds to any input
-			foreach (var element in circuit.AllElements)
-			{
-				for (int i = 0; i < element.InputPositions.Length; i++)
-				{
-					if (createdWire.OutputPositions[0] == element.InputPositions[i])
-						element.SetInput(i, new Connection(createdWire));
-				}
-			}
-
-			Wire adjacentInput = null;
-			Wire adjacentOutput = null;
-
-			Wire wireToSplit = null;
-
-			//merge wires if needed
-			foreach (var wire in circuit.Wires)
-			{
-				if (createdWire.WireDirection == wire.WireDirection)
-				{
-					if (createdWire.Position == wire.OutputPositions[0] && wire.OutputCounter == 0)
-						adjacentInput = wire;
-
-					if (createdWire.OutputPositions[0] == wire.Position)
-						adjacentOutput = wire;
-
-					if (adjacentInput != null && adjacentOutput != null)
-						break;
-				}
-				else if (PointInWire(createdWire.Position, wire))
-				{
-					wireToSplit = wire;
-					break;
-				}
-			}
-
-			if (adjacentInput != null)
-			{
-				createdWire.SetInput(adjacentInput.Inputs[0]);
-				createdWire.Position = adjacentInput.Position;
-				createdWire.Length += adjacentInput.Length;
-
-				circuit.RemoveElement(adjacentInput);
-			}
-
-			if (adjacentOutput != null)
-			{
-				if(createdWireInput != null)
-					adjacentOutput.SetInput(new Connection(createdWireInput));
-
-				adjacentOutput.Position = createdWire.Position;
-				adjacentOutput.Length += createdWire.Length;
-
-				createdWire = null;
-			}
-
-			if (wireToSplit != null)
-			{
-				Wire firstHalf = new Wire();
-				firstHalf.Position = wireToSplit.Position;
-				firstHalf.WireDirection = wireToSplit.WireDirection;
-				firstHalf.Length = 
-					Math.Abs(wireToSplit.Position.X - createdWire.Position.X) + 
-					Math.Abs(wireToSplit.Position.Y - createdWire.Position.Y);
-
-				firstHalf.SetInput(wireToSplit.Inputs[0]);
-
-				wireToSplit.Position = createdWire.Position;
-				wireToSplit.Length -= firstHalf.Length;
-
-				wireToSplit.SetInput(new Connection(firstHalf));
-				createdWire.SetInput(new Connection(firstHalf));
-
-				circuit.AddElement(firstHalf);
-			}
-
-			// add wire to circuit
-			if (createdWire != null && createdWire.Length > 0)
-			{
-				if(createdWireInput != null)
-					createdWire.SetInput(new Connection(createdWireInput));
-
-				circuit.AddElement(createdWire);
-			}
-
-			createdWire = null;
-			createdWireInput = null;
 			canvas.Refresh();
 		}
 
@@ -512,7 +326,10 @@ namespace CourseProject
 					}
 				case Tools.Wire:
 					{
-						AddCreatedWireToCircuit();
+						circuit.AddElement(createdWire);
+
+						createdWire = null;
+						canvas.Refresh();
 						break;
 					}
 			}

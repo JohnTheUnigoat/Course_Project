@@ -37,7 +37,7 @@ namespace CourseProject
 		{
 			get
 			{
-				return connectedToOutputs.Count;
+				return elementsOnOutputs.Count;
 			}
 		}
 
@@ -199,7 +199,7 @@ namespace CourseProject
 				nodePosition,
 				new Size(nodeRadius * 2, nodeRadius * 2));
 
-			if (Outputs[0] == true)
+			if (Outputs[0] == true && !IsSelected)
 			{
 				gfx.DrawLine(activePen, from, to);
 				gfx.FillPolygon(activeBrush, arrow);

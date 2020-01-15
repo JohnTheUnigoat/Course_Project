@@ -57,17 +57,17 @@ namespace CourseProject
 
 		abstract public Point[] OutputPositions { get; }
 
-		protected List<Element> connectedToOutputs = new List<Element>();
+		protected List<Element> elementsOnOutputs = new List<Element>();
 
 
 		private void AddOutputElement(Element element)
 		{
-			connectedToOutputs.Add(element);
+			elementsOnOutputs.Add(element);
 		}
 
 		public void RemoveOutputElement(Element element)
 		{
-			connectedToOutputs.Remove(element);
+			elementsOnOutputs.Remove(element);
 		}
 
 		public void Disconnect()
@@ -81,7 +81,7 @@ namespace CourseProject
 				Inputs[i].Source = null;
 			}
 
-			foreach (var element in connectedToOutputs)
+			foreach (var element in elementsOnOutputs)
 			{
 				for (int i = 0; i < element.Inputs.Length; i++)
 				{
@@ -93,7 +93,7 @@ namespace CourseProject
 				}
 			}
 
-			connectedToOutputs.Clear();
+			elementsOnOutputs.Clear();
 		}
 
 		public void SetInput(int inputIndex, Connection input)
