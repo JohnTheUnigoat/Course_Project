@@ -16,7 +16,8 @@ namespace CourseProject
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CircuitDesignerForm());
+			Application.Run(new CircuitDesignerForm());
+			//Application.Run(new OpenCircuitForm());
         }
     }
 }

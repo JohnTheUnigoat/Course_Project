@@ -43,7 +43,11 @@ namespace CourseProject
 				BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
 				null, canvas, new object[] { true });
 
-			circuit = new Circuit(6, 1);
+			OpenCircuitForm openForm = new OpenCircuitForm();
+			if (openForm.ShowDialog() == DialogResult.OK)
+				circuit = new Circuit(openForm.NumberOfInputs, openForm.NumberOfOutputs);
+			else
+				Application.Exit();
 
 			selectedTool = Tools.Edit;
 			numInputs.Value = 2;

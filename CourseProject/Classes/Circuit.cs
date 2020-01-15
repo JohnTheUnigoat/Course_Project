@@ -60,7 +60,7 @@ namespace CourseProject
 			for (int i = 0; i < numberOfOutputs; i++)
 			{
 				CircuitOutput output = new CircuitOutput();
-				output.Position = new Point(25, 1);
+				output.Position = new Point(25, i * 2 + 1);
 				outputs.Add(output);
 			}
 
